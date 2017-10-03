@@ -11,7 +11,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
-import android.view.ViewGroup.LayoutParams;
 
 import java.util.ArrayList;
 
@@ -43,7 +42,10 @@ public class PaletteAdapter extends RecyclerView.Adapter<PaletteAdapter.PaletteH
                 backgroundShape.mutate().setColorFilter(Color.parseColor(hexColor), PorterDuff.Mode.MULTIPLY);
                 Button colorButton = new Button(mLinearLayout.getContext());
                 colorButton.setBackground(backgroundShape);
-                colorButton.setLayoutParams(new LayoutParams(120,120));
+
+                LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(120,120);
+                layoutParams.setMargins(5,5,5,5);
+                colorButton.setLayoutParams(layoutParams);
                 mLinearLayout.addView(colorButton);
             }
         }
