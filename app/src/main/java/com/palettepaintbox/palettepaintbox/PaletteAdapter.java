@@ -26,18 +26,22 @@ public class PaletteAdapter extends RecyclerView.Adapter<PaletteAdapter.PaletteH
 
         private static final String COLOR_KEY = "COLOR";
 
-        public PaletteHolder(View v, ArrayList<String> colors) {
+        public PaletteHolder(View v) {
             super(v);
             mColor1 = v.findViewById(R.id.color_1);
-            Drawable bgShape = mColor1.getBackground();
-            String color = "#" + colors.get(0);
-            bgShape.mutate().setColorFilter(Color.parseColor(color), PorterDuff.Mode.MULTIPLY);
             v.setOnClickListener(this);
         }
 
         @Override
         public void onClick(View v) {
             Log.d("RecyclerView", "CLICK!");
+        }
+
+        public void bindPalette(Palette palette) {
+            mPalette = palette;
+            Drawable bgShape = mColor1.getBackground();
+            String color = "#" + mPalette.getColors().get(0);
+            bgShape.mutate().setColorFilter(Color.parseColor(color), PorterDuff.Mode.MULTIPLY);
         }
     }
 
@@ -49,14 +53,13 @@ public class PaletteAdapter extends RecyclerView.Adapter<PaletteAdapter.PaletteH
     public PaletteAdapter.PaletteHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View inflatedView = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.palette_row, parent, false);
-        ArrayList<String> testing1 = new ArrayList<>();
-        testing1.add("800000");
-        return new PaletteHolder(inflatedView, testing1);
+        return new PaletteHolder(inflatedView);
     }
 
     @Override
     public void onBindViewHolder(PaletteAdapter.PaletteHolder holder, int position) {
-
+        Palette itemPalette = mPalettes.get(position);
+        holder.bindPalette(itemPalette);
     }
 
     @Override
