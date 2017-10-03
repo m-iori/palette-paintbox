@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 
@@ -22,10 +23,12 @@ public class PaletteAdapter extends RecyclerView.Adapter<PaletteAdapter.PaletteH
 
         private Palette mPalette;
         private LinearLayout mLinearLayout;
+        private TextView mName;
 
         public PaletteHolder(View v) {
             super(v);
             mLinearLayout = v.findViewById(R.id.palette_row_linear_layout);
+            mName = v.findViewById(R.id.palette_row_name_text_view);
             v.setOnClickListener(this);
         }
 
@@ -36,6 +39,7 @@ public class PaletteAdapter extends RecyclerView.Adapter<PaletteAdapter.PaletteH
 
         public void bindPalette(Palette palette) {
             mPalette = palette;
+            mName.setText(palette.getName());
             for(String color : palette.getColors()){
                 Drawable backgroundShape = ContextCompat.getDrawable(mLinearLayout.getContext(),R.drawable.color_circle);
                 String hexColor = "#" + color;
