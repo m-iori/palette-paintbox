@@ -28,6 +28,7 @@ public class MainActivity extends AppCompatActivity {
         //MAKE UP PALETTES FOR TESTING - GET FROM DB LATER
         ArrayList<String> testing1 = new ArrayList<>();
         testing1.add("800000");
+        testing1.add("000000");
         Palette p1 = new Palette("palette 1", testing1);
 
         ArrayList<String> testing2 = new ArrayList<>();

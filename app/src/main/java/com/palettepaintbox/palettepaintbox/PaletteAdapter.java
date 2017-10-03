@@ -3,12 +3,15 @@ package com.palettepaintbox.palettepaintbox;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.LinearLayout;
+import android.view.ViewGroup.LayoutParams;
 
 import java.util.ArrayList;
 
@@ -18,17 +21,12 @@ public class PaletteAdapter extends RecyclerView.Adapter<PaletteAdapter.PaletteH
 
     public static class PaletteHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
-        private Button mColor1;
-        private Button mColor2;
-        private Button mColor3;
-        private Button mColor4;
         private Palette mPalette;
-
-        private static final String COLOR_KEY = "COLOR";
+        private LinearLayout mLinearLayout;
 
         public PaletteHolder(View v) {
             super(v);
-            mColor1 = v.findViewById(R.id.color_1);
+            mLinearLayout = v.findViewById(R.id.palette_row_linear_layout);
             v.setOnClickListener(this);
         }
 
@@ -39,9 +37,15 @@ public class PaletteAdapter extends RecyclerView.Adapter<PaletteAdapter.PaletteH
 
         public void bindPalette(Palette palette) {
             mPalette = palette;
-            Drawable bgShape = mColor1.getBackground();
-            String color = "#" + mPalette.getColors().get(0);
-            bgShape.mutate().setColorFilter(Color.parseColor(color), PorterDuff.Mode.MULTIPLY);
+            for(String color : palette.getColors()){
+                Drawable backgroundShape = ContextCompat.getDrawable(mLinearLayout.getContext(),R.drawable.color_circle);
+                String hexColor = "#" + color;
+                backgroundShape.mutate().setColorFilter(Color.parseColor(hexColor), PorterDuff.Mode.MULTIPLY);
+                Button colorButton = new Button(mLinearLayout.getContext());
+                colorButton.setBackground(backgroundShape);
+                colorButton.setLayoutParams(new LayoutParams(120,120));
+                mLinearLayout.addView(colorButton);
+            }
         }
     }
 
