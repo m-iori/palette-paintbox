@@ -7,11 +7,15 @@ import android.content.Context;
 // https://developer.android.com/training/basics/data-storage/databases.html
 public class FeedReaderDbHelper extends SQLiteOpenHelper {
 
-    private static final String SQL_CREATE_ENTRIES =
-            "CREATE TABLE Palettes (" +
+    private static final String SQL_CREATE_PALETTES =
+            "CREATE TABLE IF NOT EXISTS Palettes(" +
                     "paletteID" + " INTEGER PRIMARY KEY," +
-                    "paletteName" + " TEXT," +
-                    "paletteDate" + " DATE)";
+                    "paletteName" + " TEXT);";
+
+    private static final String SQL_CREATE_PALETTESTOCOLORS =
+            "CREATE TABLE IF NOT EXISTS PalettesToColors(" +
+                    "pID" + " INTEGER," +
+                    "pColor" + " TEXT);";
 
     // If you change the database schema, you must increment the database version.
     public static final int DATABASE_VERSION = 1;
@@ -21,7 +25,8 @@ public class FeedReaderDbHelper extends SQLiteOpenHelper {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
     public void onCreate(SQLiteDatabase db) {
-        db.execSQL(SQL_CREATE_ENTRIES);
+        db.execSQL(SQL_CREATE_PALETTES);
+        db.execSQL(SQL_CREATE_PALETTESTOCOLORS);
     }
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         // This database is only a cache for online data, so its upgrade policy is

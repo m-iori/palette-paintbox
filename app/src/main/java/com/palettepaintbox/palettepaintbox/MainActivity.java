@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import android.database.sqlite.SQLiteDatabase;
 import android.content.ContentValues;
 import android.database.Cursor;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,7 +24,7 @@ public class MainActivity extends AppCompatActivity {
     //https://developer.android.com/reference/android/graphics/Paint.html
 
     // This is the database reader.
-    FeedReaderDbHelper mDbHelper = null; //new FeedReaderDbHelper(getApplicationContext());
+    private FeedReaderDbHelper mDbHelper;
 
     private ArrayList<Palette> mPaletteList;
     private PaletteAdapter mAdapter;
@@ -34,6 +35,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        mDbHelper = new FeedReaderDbHelper(this);
         setContentView(R.layout.activity_main);
 
         mRecyclerView = (RecyclerView) findViewById(R.id.recyclerView);
@@ -54,6 +56,33 @@ public class MainActivity extends AppCompatActivity {
 
         mPaletteList.add(p1);
         mPaletteList.add(p2);
+
+        /*TEST*/
+        SQLiteDatabase db = mDbHelper.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put("paletteName", "thefirstone"); // get palette title from UI
+        long newRowId = db.insert("Palettes", null, values);
+
+        // TODO: Check if palette already has 6 colors before inserting!
+        values = new ContentValues();
+        values.put("pID", 1);
+        values.put("pColor", "FF0000");
+        newRowId = db.insert("PalettesToColors", null, values);
+
+        values = new ContentValues();
+        values.put("pID", 1);
+        values.put("pColor", "00FF00");
+        newRowId = db.insert("PalettesToColors", null, values);
+
+        values = new ContentValues();
+        values.put("pID", 1);
+        values.put("pColor", "0000FF");
+        newRowId = db.insert("PalettesToColors", null, values);
+
+        viewAllPalettes();
+        /*TEST*/
+
         //END MAKE UP PALETTES
 
         mAdapter = new PaletteAdapter(mPaletteList);
@@ -117,29 +146,43 @@ public class MainActivity extends AppCompatActivity {
         SQLiteDatabase db = mDbHelper.getReadableDatabase();
 
         String[] projection = {
-                "paletteTitle"
+                "p.paletteName",
+                "c.pColor"
         };
 
-        //String selection = FeedEntry.COLUMN_NAME_TITLE + " = ?";
-        String selection = "";
-        //String[] selectionArgs = { "My Title" };
-        String[] selectionArgs = {};
+        String selection = "p.paletteID" + " = ?";
+        //String selection = "";
+        String[] selectionArgs = { "c.pID" };
+        //String[] selectionArgs = {};
 
         String sortOrder =
-                "paletteID DESC";
+                "p.paletteID DESC";
 
-        Cursor cursor = db.query(
-                "Palettes",
-                projection,
-                selection,
-                selectionArgs,
-                null,
-                null,
-                sortOrder
+        Cursor cursor = db.rawQuery(
+                "SELECT p.paletteName, c.pColor FROM Palettes p, PalettesToColors c " +
+                        "WHERE p.paletteID = c.pID ORDER BY p.paletteID DESC",
+                null
         );
-        onDestroy();
 
-        setContentView(R.layout.activity_main);
+        //onDestroy();
+
+        ArrayList<String> test3 = new ArrayList<>();
+
+        try {
+            while (cursor.moveToNext()) {
+                //Log.v("datadata", cursor.getString(cursor.getColumnIndex("c.pColor")));
+                test3.add(cursor.getString(cursor.getColumnIndex("c.pColor")));
+            }
+        } finally {
+            cursor.close();
+        }
+
+        // TODO: Put DB cursor in with the Adapter
+        Palette p3 = new Palette("palette 3", test3);
+
+        mPaletteList.add(p3);
+
+        //setContentView(R.layout.activity_main);
     }
 
     protected void viewSinglePalette(){
