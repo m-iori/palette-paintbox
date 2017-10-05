@@ -1,22 +1,18 @@
 package com.palettepaintbox.palettepaintbox;
 
-import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
-import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.LinearLayoutManager;
-
-import java.util.ArrayList;
-import android.database.sqlite.SQLiteDatabase;
 import android.content.ContentValues;
 import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
+import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.DividerItemDecoration;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+
+import java.util.ArrayList;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
-import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
-import android.content.Context;
-import android.util.AttributeSet;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -32,6 +28,7 @@ public class MainActivity extends AppCompatActivity {
     private PaletteAdapter mAdapter;
     private RecyclerView mRecyclerView;
     private LinearLayoutManager mLinearLayoutManager;
+    private DividerItemDecoration mDividerItemDecoration;
 
     // This is called when the app first opens.
     @Override
@@ -43,6 +40,9 @@ public class MainActivity extends AppCompatActivity {
         mRecyclerView = (RecyclerView) findViewById(R.id.recyclerView);
         mLinearLayoutManager = new LinearLayoutManager(this);
         mRecyclerView.setLayoutManager(mLinearLayoutManager);
+        mDividerItemDecoration = new DividerItemDecoration(mRecyclerView.getContext(),
+                mLinearLayoutManager.getOrientation());
+        mRecyclerView.addItemDecoration(mDividerItemDecoration);
 
         mPaletteList = new ArrayList<>();
 
