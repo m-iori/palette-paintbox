@@ -9,6 +9,8 @@ import java.util.ArrayList;
 import android.database.sqlite.SQLiteDatabase;
 import android.content.ContentValues;
 import android.database.Cursor;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -189,8 +191,21 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_palette_single_viewer);
     }
 
-    protected void viewSettings(){
+    protected void viewSettings(View v){
         setContentView(R.layout.activity_settings);
+    }
+
+    protected void viewCredits(View v){
+        AlertDialog alertDialog = new AlertDialog.Builder(MainActivity.this).create();
+        alertDialog.setTitle("Credits");
+        alertDialog.setMessage("\u00A9 Rachel Hogue & Melissa Iori, 2017");
+        alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+        alertDialog.show();
     }
 
     protected void saveSettings(){

@@ -6,9 +6,30 @@
     android:layout_height="match_parent"
     tools:context="com.palettepaintbox.palettepaintbox.MainActivity">
 
+    <LinearLayout
+        android:layout_width="65dp"
+        android:layout_height="497dp"
+        android:orientation="vertical">
+
+        <ImageButton
+            android:id="@+id/settings"
+            android:layout_width="60dp"
+            android:layout_height="wrap_content"
+            android:onClick="viewSettings"
+            app:srcCompat="@drawable/ic_settings_black_24dp" />
+
+        <ImageButton
+            android:id="@+id/export"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:srcCompat="@drawable/ic_share_black_24dp" />
+
+    </LinearLayout>
+
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recyclerView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:scrollbars="vertical"/>
+        android:layout_height="497dp"
+        android:scrollbars="vertical" />
+
 </LinearLayout>
