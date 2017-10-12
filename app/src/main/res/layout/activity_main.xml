@@ -40,8 +40,9 @@
             android:layout_height="wrap_content"
             android:layout_gravity="bottom|end"
             android:layout_margin="@dimen/fab_margin"
-            app:backgroundTint="#d3d3d3"
+            android:onClick="createNewPalette"
             android:tint="#000"
+            app:backgroundTint="#d3d3d3"
             app:fabSize="normal"
             app:srcCompat="@drawable/ic_add_black_24dp"
             />

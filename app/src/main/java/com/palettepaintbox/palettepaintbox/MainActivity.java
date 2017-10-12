@@ -1,6 +1,8 @@
 package com.palettepaintbox.palettepaintbox;
 
+import android.app.AlertDialog;
 import android.content.ContentValues;
+import android.content.DialogInterface;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
@@ -8,11 +10,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.View;
 
 import java.util.ArrayList;
-import android.app.AlertDialog;
-import android.content.DialogInterface;
-import android.view.View;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -106,10 +106,6 @@ public class MainActivity extends AppCompatActivity {
         insertPoint.addView(v, 0, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));*/
     }
 
-    protected void createNewPalette(){
-        setContentView(R.layout.activity_palette_creator_and_editor);
-    }
-
     protected void saveNewPalette(){
         //https://developer.android.com/training/basics/data-storage/databases.html
         SQLiteDatabase db = mDbHelper.getWritableDatabase();
@@ -189,6 +185,10 @@ public class MainActivity extends AppCompatActivity {
 
     protected void viewSinglePalette(){
         setContentView(R.layout.activity_palette_single_viewer);
+    }
+
+    protected void createNewPalette(View v) {
+        setContentView(R.layout.activity_palette_creator_and_editor);
     }
 
     protected void viewSettings(View v){
