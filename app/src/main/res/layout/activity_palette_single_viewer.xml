@@ -4,22 +4,28 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.palettepaintbox.palettepaintbox.MainActivity">
+    tools:context="com.palettepaintbox.palettepaintbox.ViewSingleActivity">
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="252dp"
-        android:orientation="horizontal">
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:weightSum="1">
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/singleview"
             android:layout_width="match_parent"
-            android:layout_height="137dp" />
+            android:layout_height="119dp" >
+
+        </android.support.v7.widget.RecyclerView>
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/largeview"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="199dp"
+            android:layout_weight="0.81">
+
+        </android.support.v7.widget.RecyclerView>
     </LinearLayout>
 
 </android.support.design.widget.CoordinatorLayout>

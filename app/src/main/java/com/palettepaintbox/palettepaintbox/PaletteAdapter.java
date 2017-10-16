@@ -1,5 +1,6 @@
 package com.palettepaintbox.palettepaintbox;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
@@ -14,6 +15,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.view.View.OnClickListener;
 import android.app.Activity;
+import android.content.Context;
 
 import java.util.ArrayList;
 
@@ -32,7 +34,7 @@ public class PaletteAdapter extends RecyclerView.Adapter<PaletteAdapter.PaletteH
             mLinearLayout = v.findViewById(R.id.palette_row_linear_layout);
             mLinearLayout.setOnClickListener(goToViewer);
             mName = v.findViewById(R.id.palette_row_name_text_view);
-            v.setOnClickListener(this);
+            v.setOnClickListener(goToViewer); //this
         }
 
         @Override
@@ -60,18 +62,9 @@ public class PaletteAdapter extends RecyclerView.Adapter<PaletteAdapter.PaletteH
 
     public static OnClickListener goToViewer = new OnClickListener(){
         public void onClick(View v){
-            ArrayList<Palette> mOnePalette = new ArrayList<>();
-            //mOnePalette = viewSinglePalette(mOnePalette);
-
-            //mAdapter = new PaletteAdapter(mOnePalette);
-            //RecyclerView mRecyclerSingleView = (RecyclerView) findViewById(R.id.singleview);
-            //mRecyclerSingleView.setAdapter(mAdapter);
-
-            PaletteLargeAdapter mLarge = new PaletteLargeAdapter(mOnePalette);
-            //RecyclerView mRecyclerLargeView = (RecyclerView) findViewById(R.id.largeview);
-            //mRecyclerLargeView.setAdapter(mLarge);
-
-           // setContentView(R.layout.activity_palette_single_viewer);
+            Intent intent = new Intent(v.getContext(), ViewSingleActivity.class);
+            intent.putExtra("paletteID", 1);
+            v.getContext().startActivity(intent);
         }
     };
 
