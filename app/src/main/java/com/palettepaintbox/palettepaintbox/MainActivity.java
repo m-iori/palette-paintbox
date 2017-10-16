@@ -11,6 +11,11 @@ import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.widget.LinearLayout;
+import android.widget.TextView;
+import android.view.View.OnClickListener;
+import android.view.View.OnContextClickListener;
+import android.content.Context;
 
 import java.util.ArrayList;
 
@@ -89,6 +94,7 @@ public class MainActivity extends AppCompatActivity {
 
         mAdapter = new PaletteAdapter(mPaletteList);
         mRecyclerView.setAdapter(mAdapter);
+        //mRecyclerView.setOnContextClickListener(goToViewer);
 
         // A PaletteView is a custom view which we create.
         // We can get palettes from the database.
@@ -183,8 +189,47 @@ public class MainActivity extends AppCompatActivity {
         //setContentView(R.layout.activity_main);
     }
 
-    protected void viewSinglePalette(){
-        setContentView(R.layout.activity_palette_single_viewer);
+    protected ArrayList<Palette> viewSinglePalette(ArrayList<Palette> plist){
+        SQLiteDatabase db = mDbHelper.getReadableDatabase();
+
+        String[] projection = {
+                "p.paletteName",
+                "c.pColor"
+        };
+
+        String selection = "p.paletteID" + " = ?";
+        //String selection = "";
+        String[] selectionArgs = { "c.pID" };
+        //String[] selectionArgs = {};
+
+        String sortOrder =
+                "p.paletteID DESC";
+
+        Cursor cursor = db.rawQuery(
+                "SELECT p.paletteName, c.pColor FROM Palettes p, PalettesToColors c " +
+                        "WHERE p.paletteID = c.pID ORDER BY p.paletteID DESC",
+                null
+        );
+
+        //onDestroy();
+
+        ArrayList<String> test3 = new ArrayList<>();
+
+        try {
+            while (cursor.moveToNext()) {
+                //Log.v("datadata", cursor.getString(cursor.getColumnIndex("c.pColor")));
+                test3.add(cursor.getString(cursor.getColumnIndex("c.pColor")));
+            }
+        } finally {
+            cursor.close();
+        }
+
+        // TODO: Put DB cursor in with the Adapter
+        Palette p3 = new Palette("palette 3", test3);
+
+        plist.add(p3);
+        return plist;
+        //setContentView(R.layout.activity_palette_single_viewer);
     }
 
     protected void createNewPalette(View v) {
