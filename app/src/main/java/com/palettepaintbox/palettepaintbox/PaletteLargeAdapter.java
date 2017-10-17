@@ -16,6 +16,7 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 
+// The Palette Large view is a more descriptive view of rectangles which features the color data.
 public class PaletteLargeAdapter extends RecyclerView.Adapter<PaletteLargeAdapter.PaletteHolder> {
 
     private ArrayList<Palette> mPalettes;
@@ -24,12 +25,10 @@ public class PaletteLargeAdapter extends RecyclerView.Adapter<PaletteLargeAdapte
 
         private Palette mPalette;
         private LinearLayout mLinearLayout;
-        private TextView mName;
 
         public PaletteHolder(View v) {
             super(v);
             mLinearLayout = v.findViewById(R.id.palette_row_linear_layout);
-            //mName = v.findViewById(R.id.palette_row_name_text_view);
             v.setOnClickListener(this);
         }
 
@@ -40,7 +39,6 @@ public class PaletteLargeAdapter extends RecyclerView.Adapter<PaletteLargeAdapte
 
         public void bindPalette(Palette palette) {
             mPalette = palette;
-            //mName.setText(palette.getName());
             for(String color : palette.getColors()){
                 Drawable backgroundShape = ContextCompat.getDrawable(mLinearLayout.getContext(),R.drawable.color_rectangle);
                 String hexColor = "#" + color;
@@ -49,6 +47,7 @@ public class PaletteLargeAdapter extends RecyclerView.Adapter<PaletteLargeAdapte
                 colorButton.setBackground(backgroundShape);
                 colorButton.setText(hexColor);
 
+                // TODO: Find the correct bounds
                 LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(200,200);
                 layoutParams.setMargins(100,100,100,100);
                 colorButton.setLayoutParams(layoutParams);
@@ -56,8 +55,6 @@ public class PaletteLargeAdapter extends RecyclerView.Adapter<PaletteLargeAdapte
             }
         }
     }
-
-
 
     public PaletteLargeAdapter(ArrayList<Palette> palettes) {
         mPalettes = palettes;

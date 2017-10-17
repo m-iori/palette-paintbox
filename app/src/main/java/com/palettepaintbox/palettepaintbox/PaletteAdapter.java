@@ -60,6 +60,8 @@ public class PaletteAdapter extends RecyclerView.Adapter<PaletteAdapter.PaletteH
         }
     }
 
+    // Palette onclick
+    // Goes to the Single View for a palette
     public static OnClickListener goToViewer = new OnClickListener(){
         public void onClick(View v){
             Intent intent = new Intent(v.getContext(), ViewSingleActivity.class);

@@ -11,27 +11,21 @@ import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
-import android.widget.LinearLayout;
-import android.widget.TextView;
-import android.view.View.OnClickListener;
-import android.view.View.OnContextClickListener;
-import android.content.Context;
-
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
 
-    //https://developer.android.com/training/basics/data-storage/databases.html
-    //https://developer.android.com/reference/android/graphics/drawable/shapes/Shape.html
-    //https://developer.android.com/reference/android/graphics/Canvas.html
-    //https://developer.android.com/reference/android/graphics/Paint.html
-
     // This is the database reader.
     private FeedReaderDbHelper mDbHelper;
 
+    // PaletteList contains the palette data.
+    // The adapter feeds the data into the RecyclerView.
+    // The RecyclerView displays the data.
     private ArrayList<Palette> mPaletteList;
     private PaletteAdapter mAdapter;
     private RecyclerView mRecyclerView;
+
+    // Layout manager and item divider
     private LinearLayoutManager mLinearLayoutManager;
     private DividerItemDecoration mDividerItemDecoration;
 
@@ -39,16 +33,20 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        // Set up database helper
         mDbHelper = new FeedReaderDbHelper(this);
+
+        // Set the main view
         setContentView(R.layout.activity_main);
 
+        // Set up RecyclerView
         mRecyclerView = (RecyclerView) findViewById(R.id.recyclerView);
         mLinearLayoutManager = new LinearLayoutManager(this);
         mRecyclerView.setLayoutManager(mLinearLayoutManager);
         mDividerItemDecoration = new DividerItemDecoration(mRecyclerView.getContext(),
                 mLinearLayoutManager.getOrientation());
         mRecyclerView.addItemDecoration(mDividerItemDecoration);
-
         mPaletteList = new ArrayList<>();
 
         //MAKE UP PALETTES FOR TESTING - GET FROM DB LATER
@@ -65,8 +63,8 @@ public class MainActivity extends AppCompatActivity {
         mPaletteList.add(p2);
 
         /*TEST*/
+        // Adds new palettes
         SQLiteDatabase db = mDbHelper.getWritableDatabase();
-
         ContentValues values = new ContentValues();
         values.put("paletteName", "thefirstone"); // get palette title from UI
         long newRowId = db.insert("Palettes", null, values);
@@ -87,14 +85,16 @@ public class MainActivity extends AppCompatActivity {
         values.put("pColor", "0000FF");
         newRowId = db.insert("PalettesToColors", null, values);
 
+        // Get all the palettes from the data to the view
         viewAllPalettes();
+
         /*TEST*/
 
         //END MAKE UP PALETTES
 
+        // Connect adapter to view
         mAdapter = new PaletteAdapter(mPaletteList);
         mRecyclerView.setAdapter(mAdapter);
-        //mRecyclerView.setOnContextClickListener(goToViewer);
 
         // A PaletteView is a custom view which we create.
         // We can get palettes from the database.
@@ -112,8 +112,8 @@ public class MainActivity extends AppCompatActivity {
         insertPoint.addView(v, 0, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));*/
     }
 
+    // Saves a new palette
     protected void saveNewPalette(){
-        //https://developer.android.com/training/basics/data-storage/databases.html
         SQLiteDatabase db = mDbHelper.getWritableDatabase();
 
         ContentValues values = new ContentValues();
@@ -124,10 +124,13 @@ public class MainActivity extends AppCompatActivity {
         onDestroy();
     }
 
+    // Loads the palette editor
     protected void editExistingPalette(){
         setContentView(R.layout.activity_palette_creator_and_editor);
     }
 
+    // Does a DB update
+    // TODO: Also save the color order, like color 1, color 2
     protected void saveExistingPalette(){
         SQLiteDatabase db = mDbHelper.getWritableDatabase();
 
@@ -146,6 +149,7 @@ public class MainActivity extends AppCompatActivity {
         onDestroy();
     }
 
+    // Shows all palettes
     protected void viewAllPalettes(){
         SQLiteDatabase db = mDbHelper.getReadableDatabase();
 
@@ -189,14 +193,17 @@ public class MainActivity extends AppCompatActivity {
         //setContentView(R.layout.activity_main);
     }
 
+    // Opens the palette creator
     protected void createNewPalette(View v) {
         setContentView(R.layout.activity_palette_creator_and_editor);
     }
 
+    // Opens the settings
     protected void viewSettings(View v){
         setContentView(R.layout.activity_settings);
     }
 
+    // Opens the credits
     protected void viewCredits(View v){
         AlertDialog alertDialog = new AlertDialog.Builder(MainActivity.this).create();
         alertDialog.setTitle("Credits");
@@ -210,10 +217,12 @@ public class MainActivity extends AppCompatActivity {
         alertDialog.show();
     }
 
+    // Saves the new settings
     protected void saveSettings(){
         //save in database
     }
 
+    // Deletes existing palettes
     protected void deletePalettes(){
         SQLiteDatabase db = mDbHelper.getWritableDatabase();
         String selection = "paletteID = ?";
@@ -222,6 +231,8 @@ public class MainActivity extends AppCompatActivity {
         onDestroy();
     }
 
+    // Later features
+    /*
     protected void exportPalettes(){
 
     }
@@ -230,6 +241,12 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    protected void getColorsFromImage(){
+
+    }
+    */
+
+    // Closes the database connection when activity is destroyed
     protected void onDestroy() {
         mDbHelper.close();
         super.onDestroy();

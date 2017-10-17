@@ -3,6 +3,9 @@ package com.palettepaintbox.palettepaintbox;
 import java.io.Serializable;
 import java.util.ArrayList;
 
+/*
+ * A Palette has a name and a set of colors, up to 6.
+ */
 public class Palette implements Serializable{
 
     private String name;
@@ -13,7 +16,8 @@ public class Palette implements Serializable{
         this.colors = colors;
     }
 
-    public ArrayList<String> getColors() { //eventually pass in "format" string and add switch statement for hex, etc, if we need other formats
+    public ArrayList<String> getColors() {
+        //eventually pass in "format" string and add switch statement for hex, etc, if we need other formats
         return colors;
     }
 
