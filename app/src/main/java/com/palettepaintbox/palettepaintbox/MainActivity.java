@@ -6,6 +6,7 @@ import android.content.DialogInterface;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
@@ -126,7 +127,7 @@ public class MainActivity extends AppCompatActivity {
 
     // Loads the palette editor
     protected void editExistingPalette(){
-        setContentView(R.layout.activity_palette_creator_and_editor);
+        setContentView(R.layout.palette_creator_and_editor);
     }
 
     // Does a DB update
@@ -195,7 +196,10 @@ public class MainActivity extends AppCompatActivity {
 
     // Opens the palette creator
     protected void createNewPalette(View v) {
-        setContentView(R.layout.activity_palette_creator_and_editor);
+        setContentView(R.layout.palette_creator_and_editor);
+        CoordinatorLayout coordinatorLayout = (CoordinatorLayout) findViewById(R.id.creator_and_editor);
+        ColorPickerView colorPickerView= new ColorPickerView(coordinatorLayout.getContext());
+        coordinatorLayout.addView(colorPickerView);
     }
 
     // Opens the settings
