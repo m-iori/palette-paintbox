@@ -8,10 +8,12 @@ import java.util.ArrayList;
  */
 public class Palette implements Serializable{
 
+    private int paletteID;
     private String name;
     private ArrayList<String> colors;
 
-    public Palette(String name, ArrayList<String> colors){
+    public Palette(int paletteID, String name, ArrayList<String> colors){
+        this.paletteID = paletteID;
         this.name = name;
         this.colors = colors;
     }
@@ -23,5 +25,9 @@ public class Palette implements Serializable{
 
     public String getName() {
         return name;
+    }
+
+    public int getPaletteID(){
+        return paletteID;
     }
 }

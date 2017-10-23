@@ -34,7 +34,7 @@ public class PaletteAdapter extends RecyclerView.Adapter<PaletteAdapter.PaletteH
             mLinearLayout = v.findViewById(R.id.palette_row_linear_layout);
             mLinearLayout.setOnClickListener(goToViewer);
             mName = v.findViewById(R.id.palette_row_name_text_view);
-            v.setOnClickListener(goToViewer); //this
+            //v.setOnClickListener(goToViewer); //this
         }
 
         @Override
@@ -57,6 +57,7 @@ public class PaletteAdapter extends RecyclerView.Adapter<PaletteAdapter.PaletteH
                 colorButton.setLayoutParams(layoutParams);
                 mLinearLayout.addView(colorButton);
             }
+            mLinearLayout.setId(palette.getPaletteID());
         }
     }
 
@@ -65,7 +66,7 @@ public class PaletteAdapter extends RecyclerView.Adapter<PaletteAdapter.PaletteH
     public static OnClickListener goToViewer = new OnClickListener(){
         public void onClick(View v){
             Intent intent = new Intent(v.getContext(), ViewSingleActivity.class);
-            intent.putExtra("paletteID", 1);
+            intent.putExtra("paletteID", v.getId());
             v.getContext().startActivity(intent);
         }
     };

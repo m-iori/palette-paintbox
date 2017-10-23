@@ -28,7 +28,7 @@ public class PaletteLargeAdapter extends RecyclerView.Adapter<PaletteLargeAdapte
 
         public PaletteHolder(View v) {
             super(v);
-            mLinearLayout = v.findViewById(R.id.palette_row_linear_layout);
+            mLinearLayout = v.findViewById(R.id.palette_large_list_layout);
             v.setOnClickListener(this);
         }
 
@@ -48,8 +48,8 @@ public class PaletteLargeAdapter extends RecyclerView.Adapter<PaletteLargeAdapte
                 colorButton.setText(hexColor);
 
                 // TODO: Find the correct bounds
-                LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(200,200);
-                layoutParams.setMargins(100,100,100,100);
+                LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(200,100);
+                layoutParams.setMargins(5,5,5,5);
                 colorButton.setLayoutParams(layoutParams);
                 mLinearLayout.addView(colorButton);
             }
@@ -63,7 +63,7 @@ public class PaletteLargeAdapter extends RecyclerView.Adapter<PaletteLargeAdapte
     @Override
     public PaletteLargeAdapter.PaletteHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View inflatedView = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.palette_row, parent, false);
+                .inflate(R.layout.palette_large_list, parent, false);
         return new PaletteHolder(inflatedView);
     }
 

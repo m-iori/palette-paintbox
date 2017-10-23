@@ -11,8 +11,11 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.Menu;
 import android.view.View;
 import java.util.ArrayList;
+import android.view.MenuItem;
+import android.support.v7.widget.Toolbar;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -41,6 +44,11 @@ public class MainActivity extends AppCompatActivity {
         // Set the main view
         setContentView(R.layout.activity_main);
 
+        // Start the toolbar
+        Toolbar tb = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(tb);
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
+
         // Set up RecyclerView
         mRecyclerView = (RecyclerView) findViewById(R.id.recyclerView);
         mLinearLayoutManager = new LinearLayoutManager(this);
@@ -54,11 +62,11 @@ public class MainActivity extends AppCompatActivity {
         ArrayList<String> testing1 = new ArrayList<>();
         testing1.add("800000");
         testing1.add("000000");
-        Palette p1 = new Palette("palette 1", testing1);
+        Palette p1 = new Palette(1, "palette 1", testing1);
 
         ArrayList<String> testing2 = new ArrayList<>();
         testing2.add("FFFF00");
-        Palette p2 = new Palette("palette 2", testing2);
+        Palette p2 = new Palette(2, "palette 2", testing2);
 
         mPaletteList.add(p1);
         mPaletteList.add(p2);
@@ -67,22 +75,22 @@ public class MainActivity extends AppCompatActivity {
         // Adds new palettes
         SQLiteDatabase db = mDbHelper.getWritableDatabase();
         ContentValues values = new ContentValues();
-        values.put("paletteName", "thefirstone"); // get palette title from UI
+        values.put("paletteName", "TestPalette"); // get palette title from UI
         long newRowId = db.insert("Palettes", null, values);
 
         // TODO: Check if palette already has 6 colors before inserting!
         values = new ContentValues();
-        values.put("pID", 1);
+        values.put("pID", 3);
         values.put("pColor", "FF0000");
         newRowId = db.insert("PalettesToColors", null, values);
 
         values = new ContentValues();
-        values.put("pID", 1);
+        values.put("pID", 3);
         values.put("pColor", "00FF00");
         newRowId = db.insert("PalettesToColors", null, values);
 
         values = new ContentValues();
-        values.put("pID", 1);
+        values.put("pID", 3);
         values.put("pColor", "0000FF");
         newRowId = db.insert("PalettesToColors", null, values);
 
@@ -180,14 +188,14 @@ public class MainActivity extends AppCompatActivity {
         try {
             while (cursor.moveToNext()) {
                 //Log.v("datadata", cursor.getString(cursor.getColumnIndex("c.pColor")));
-                test3.add(cursor.getString(cursor.getColumnIndex("c.pColor")));
+                test3.add(cursor.getString(cursor.getColumnIndex("pColor")));
             }
         } finally {
             cursor.close();
         }
 
         // TODO: Put DB cursor in with the Adapter
-        Palette p3 = new Palette("palette 3", test3);
+        Palette p3 = new Palette(3, "palette 3", test3);
 
         mPaletteList.add(p3);
 
@@ -203,7 +211,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     // Opens the settings
-    protected void viewSettings(View v){
+    protected void viewSettings(){
         setContentView(R.layout.activity_settings);
     }
 
@@ -254,6 +262,29 @@ public class MainActivity extends AppCompatActivity {
     protected void onDestroy() {
         mDbHelper.close();
         super.onDestroy();
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_settings:
+                viewSettings();
+                return true;
+
+            case R.id.action_export:
+                return true;
+
+            default:
+                return super.onOptionsItemSelected(item);
+
+        }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_bar, menu);
+        return true;
     }
 
 }

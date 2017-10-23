@@ -8,6 +8,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 
 import java.util.ArrayList;
 
@@ -33,6 +34,7 @@ public class ViewSingleActivity extends AppCompatActivity {
         ArrayList<Palette> mOnePalette = new ArrayList<>();
         Intent i = getIntent();
         int pid = i.getIntExtra("paletteID", 1);
+        Log.v("paletteID", "pid: " + pid);
         mOnePalette = viewSinglePalette(mOnePalette,pid);
 
         mAdapter = new PaletteAdapter(mOnePalette);
@@ -72,18 +74,20 @@ public class ViewSingleActivity extends AppCompatActivity {
         //onDestroy();
 
         ArrayList<String> test3 = new ArrayList<>();
+        String pname = "Palette not found.";
 
         try {
             while (cursor.moveToNext()) {
                 //Log.v("datadata", cursor.getString(cursor.getColumnIndex("pColor")));
                 test3.add(cursor.getString(cursor.getColumnIndex("pColor")));
+                pname = cursor.getString(cursor.getColumnIndex("paletteName"));
             }
         } finally {
             cursor.close();
         }
 
         // TODO: Put DB cursor in with the Adapter
-        com.palettepaintbox.palettepaintbox.Palette p3 = new com.palettepaintbox.palettepaintbox.Palette("palette 3", test3);
+        com.palettepaintbox.palettepaintbox.Palette p3 = new com.palettepaintbox.palettepaintbox.Palette(3, pname, test3);
 
         plist.add(p3);
         return plist;
