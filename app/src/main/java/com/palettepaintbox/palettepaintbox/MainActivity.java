@@ -16,6 +16,7 @@ import android.view.View;
 import java.util.ArrayList;
 import android.view.MenuItem;
 import android.support.v7.widget.Toolbar;
+import android.widget.LinearLayout;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -205,9 +206,12 @@ public class MainActivity extends AppCompatActivity {
     // Opens the palette creator
     protected void createNewPalette(View v) {
         setContentView(R.layout.palette_creator_and_editor);
-        CoordinatorLayout coordinatorLayout = (CoordinatorLayout) findViewById(R.id.creator_and_editor);
-        ColorPickerView colorPickerView= new ColorPickerView(coordinatorLayout.getContext());
-        coordinatorLayout.addView(colorPickerView);
+        LinearLayout layout = (LinearLayout) findViewById(R.id.creator_and_editor);
+        ColorPickerView colorPickerView= new ColorPickerView(layout.getContext());
+        layout.addView(colorPickerView);
+        ArrayList<String> paletteColors = new ArrayList<>();
+        paletteColors.add("FFFFFF");
+        Palette newPalette = new Palette(-1, null, paletteColors);
     }
 
     // Opens the settings
@@ -276,7 +280,6 @@ public class MainActivity extends AppCompatActivity {
 
             default:
                 return super.onOptionsItemSelected(item);
-
         }
     }
 
