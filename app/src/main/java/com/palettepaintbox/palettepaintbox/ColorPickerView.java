@@ -53,11 +53,10 @@ public class ColorPickerView extends View {
         if (mBitmap == null) {
             mBitmap = Bitmap.createBitmap(getWidth(), getHeight(), Bitmap.Config.RGB_565);
             mBitmapCanvas = new Canvas(mBitmap);
+            mBitmapCanvas.drawColor(Color.WHITE); // clear previously drawn stuff
+            mBitmapCanvas.translate(centerX, centerY);
+            mBitmapCanvas.drawOval(new RectF(-r, -r, r, r), mPaint);
         }
-
-        mBitmapCanvas.drawColor(Color.WHITE); // clear previously drawn stuff
-        mBitmapCanvas.translate(centerX, centerY);
-        mBitmapCanvas.drawOval(new RectF(-r, -r, r, r), mPaint);
 
         canvas.drawBitmap(mBitmap, 0, 0, mDrawPaint);
     }
@@ -65,7 +64,9 @@ public class ColorPickerView extends View {
     @Override
     public boolean onTouchEvent(MotionEvent event){
         int pixel = mBitmap.getPixel(Math.round(event.getX()),Math.round(event.getY()));
+        //CHECK IF POINT IS IN CIRCLE before doing anything - use distance formula from point to center and compare to radius
         //have a listener that sets the color in the linear layout palette_linear_layout
+
 //        Drawable backgroundShape = ContextCompat.getDrawable(this.getContext(),R.drawable.color_circle);
 //        backgroundShape.mutate().setColorFilter(pixel, PorterDuff.Mode.MULTIPLY);
 //        Button colorButton = new Button(this.getContext());
