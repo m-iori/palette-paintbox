@@ -55,6 +55,7 @@ public class PaletteAdapter extends RecyclerView.Adapter<PaletteAdapter.PaletteH
                 LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(120,120);
                 layoutParams.setMargins(5,5,5,5);
                 colorButton.setLayoutParams(layoutParams);
+                colorButton.setOnClickListener(goToViewer);
                 mLinearLayout.addView(colorButton);
             }
             mLinearLayout.setId(palette.getPaletteID());

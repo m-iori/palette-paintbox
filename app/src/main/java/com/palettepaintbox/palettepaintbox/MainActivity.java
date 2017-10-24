@@ -3,6 +3,7 @@ package com.palettepaintbox.palettepaintbox;
 import android.app.AlertDialog;
 import android.content.ContentValues;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
@@ -14,9 +15,14 @@ import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
 import android.view.View;
 import java.util.ArrayList;
+import java.util.HashMap;
+
 import android.view.MenuItem;
 import android.support.v7.widget.Toolbar;
+import android.widget.CheckBox;
+import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.RadioButton;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -122,14 +128,34 @@ public class MainActivity extends AppCompatActivity {
         insertPoint.addView(v, 0, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));*/
     }
 
+    protected void processNewPalette(View v){
+        ArrayList<String> newColors = new ArrayList<String>();
+        EditText colorInput = (EditText)(findViewById(R.id.paletteColorInput));
+        newColors.add(colorInput.getText().toString());
+        EditText nameInput = (EditText)(findViewById(R.id.paletteNameInput));
+        saveNewPalette(nameInput.getText().toString(), newColors);
+        Intent intent = getIntent();
+        startActivity(intent);
+        finish();
+    }
+
     // Saves a new palette
-    protected void saveNewPalette(){
+    protected void saveNewPalette(String paletteName, ArrayList<String> paletteColors){
         SQLiteDatabase db = mDbHelper.getWritableDatabase();
-
         ContentValues values = new ContentValues();
-        values.put("paletteTitle", "test"); // get palette title from UI
 
-        long newRowId = db.insert("Palettes", null, values);
+        values.put("paletteName", paletteName);
+        long pid = db.insert("Palettes", null, values);
+
+        long newRowId;
+
+        for(String color : paletteColors) {
+            // TODO: Check if palette already has 6 colors before inserting!
+            values = new ContentValues();
+            values.put("pID", pid+0);
+            values.put("pColor", color);
+            newRowId = db.insert("PalettesToColors", null, values);
+        }
 
         onDestroy();
     }
@@ -177,28 +203,42 @@ public class MainActivity extends AppCompatActivity {
                 "p.paletteID DESC";
 
         Cursor cursor = db.rawQuery(
-                "SELECT p.paletteName, c.pColor FROM Palettes p, PalettesToColors c " +
+                "SELECT p.paletteID, p.paletteName, c.pColor FROM Palettes p, PalettesToColors c " +
                         "WHERE p.paletteID = c.pID ORDER BY p.paletteID DESC",
                 null
         );
 
         //onDestroy();
 
-        ArrayList<String> test3 = new ArrayList<>();
+        for(int i = 0; i < cursor.getCount(); i++) {
+            HashMap<Integer,String> paletteNames = new HashMap<Integer,String>();
+            HashMap<Integer,ArrayList<String>> paletteColors = new HashMap<Integer,ArrayList<String>>();
 
-        try {
-            while (cursor.moveToNext()) {
-                //Log.v("datadata", cursor.getString(cursor.getColumnIndex("c.pColor")));
-                test3.add(cursor.getString(cursor.getColumnIndex("pColor")));
+            try {
+                while (cursor.moveToNext()) {
+                    Integer paletteID = cursor.getInt(cursor.getColumnIndex("paletteID"));
+                    String paletteName = cursor.getString(cursor.getColumnIndex("paletteName"));
+                    if(!(paletteNames.containsKey(paletteID))){
+                        paletteNames.put(paletteID, paletteName);
+                    }
+                    if(!(paletteColors.containsKey(paletteID))){
+                        ArrayList<String> pcolors = new ArrayList<String>();
+                        paletteColors.put(paletteID, pcolors);
+                    }
+                    paletteColors.get(paletteID).add(cursor.getString(cursor.getColumnIndex("pColor")));
+                }
+            } finally {
+                cursor.close();
             }
-        } finally {
-            cursor.close();
+
+            // TODO: Put DB cursor in with the Adapter
+            for(int id : paletteNames.keySet()){
+                String pName = paletteNames.get(id);
+                ArrayList<String> pColors = paletteColors.get(id);
+                Palette nextPalette = new Palette(id, pName, pColors);
+                mPaletteList.add(nextPalette);
+            }
         }
-
-        // TODO: Put DB cursor in with the Adapter
-        Palette p3 = new Palette(3, "palette 3", test3);
-
-        mPaletteList.add(p3);
 
         //setContentView(R.layout.activity_main);
     }
@@ -289,5 +329,22 @@ public class MainActivity extends AppCompatActivity {
         getMenuInflater().inflate(R.menu.menu_bar, menu);
         return true;
     }
+
+    protected void enableColorCodeSettings(View v){
+        View hex = findViewById(R.id.showHexcode);
+        View rgb = findViewById(R.id.showRGB);
+        hex.setEnabled(true);
+        rgb.setEnabled(true);
+    }
+
+    protected void disableColorCodeSettings(View v){
+        CheckBox hex = (CheckBox) findViewById(R.id.showHexcode);
+        CheckBox rgb = (CheckBox) findViewById(R.id.showRGB);
+        hex.setChecked(false);
+        rgb.setChecked(false);
+        hex.setEnabled(false);
+        rgb.setEnabled(false);
+    }
+
 
 }

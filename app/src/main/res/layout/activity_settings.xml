@@ -19,6 +19,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:checked="true"
             android:text="Light" />
 
         <RadioButton
@@ -44,18 +45,21 @@
             android:id="@+id/radioButton5"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:onClick="enableColorCodeSettings"
             android:layout_weight="1"
+            android:checked="true"
             android:text="Show" />
 
         <CheckBox
-            android:id="@+id/checkBox2"
+            android:id="@+id/showHexcode"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:checked="true"
             android:text="Hex Code (#rrggbb)" />
 
         <CheckBox
-            android:id="@+id/checkBox3"
+            android:id="@+id/showRGB"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -65,6 +69,7 @@
             android:id="@+id/radioButton3"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:onClick="disableColorCodeSettings"
             android:layout_weight="1"
             android:text="None" />
     </RadioGroup>
