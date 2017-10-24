@@ -7,11 +7,12 @@ import android.graphics.Paint;
 import android.graphics.RectF;
 import android.graphics.Shader;
 import android.graphics.SweepGradient;
+import android.view.MotionEvent;
 import android.view.View;
 
 public class ColorPickerView extends View {
 
-    private static final int CENTER_X = 450;
+    private int centerX, centerY;
 
     private final int[] mColors;
     private Paint mPaint;
@@ -38,9 +39,17 @@ public class ColorPickerView extends View {
 
     @Override
     protected void onDraw(Canvas canvas) {
-        float r = CENTER_X - mPaint.getStrokeWidth();
-        canvas.translate(CENTER_X, CENTER_X);
+        this.centerX = this.getMeasuredWidth() / 2;
+        this.centerY = this.getMeasuredHeight() - centerX;
+        float r = mPaint.getStrokeWidth() / 2;
+        this.getMeasuredHeight();
+        canvas.translate(centerX, centerY);
         canvas.drawOval(new RectF(-r, -r, r, r), mPaint);
+    }
+
+    @Override
+    public boolean onTouchEvent(MotionEvent event){
+        return true;
     }
 
 }
