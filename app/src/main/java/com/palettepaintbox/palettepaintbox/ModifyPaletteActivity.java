@@ -19,6 +19,7 @@ public class ModifyPaletteActivity extends AppCompatActivity {
     Button mSelectedColor;
     private ArrayList<String> colors;
     private ArrayList<Button> buttons;
+    private int mSelectedIndex;
 
     public interface OnColorChangedListener {
         void colorChanged(int color);
@@ -32,12 +33,13 @@ public class ModifyPaletteActivity extends AppCompatActivity {
 
         OnColorChangedListener l = new OnColorChangedListener() {
             public void colorChanged(int color) {
-                String hexColor = String.format("#%06X", (0xFFFFFF & color));
+                String hexColor = String.format("%06X", (0xFFFFFF & color));
                 EditText hexText = (EditText) findViewById(R.id.paletteColorInput);
-                hexText.setText(hexColor);
+                hexText.setText("#" + hexColor);
                 Drawable backgroundShape = ContextCompat.getDrawable(mLinearLayout.getContext(),R.drawable.color_circle);
                 backgroundShape.mutate().setColorFilter(color, PorterDuff.Mode.MULTIPLY);
                 mSelectedColor.setBackground(backgroundShape);
+                colors.set(mSelectedIndex, hexColor);
             }
         };
 
@@ -45,9 +47,7 @@ public class ModifyPaletteActivity extends AppCompatActivity {
         layout.addView(colorPickerView);
 
         colors = new ArrayList<>();
-        buttons = new ArrayList<>();
 
-        colors.add("FFFFFF");
         colors.add("FFFFFF");
 
         mLinearLayout = (LinearLayout) findViewById(R.id.palette_linear_layout);
@@ -56,6 +56,7 @@ public class ModifyPaletteActivity extends AppCompatActivity {
     }
 
     private void addColorsToView(){
+        buttons = new ArrayList<>();
         mLinearLayout.removeAllViews();
         for(String color : this.colors) {
             Drawable backgroundShape = ContextCompat.getDrawable(mLinearLayout.getContext(), R.drawable.color_circle);
@@ -67,6 +68,7 @@ public class ModifyPaletteActivity extends AppCompatActivity {
                 @Override
                 public void onClick(View v) {
                     mSelectedColor = (Button)v;
+                    mSelectedIndex = buttons.indexOf(v);
                 }
             });
 
@@ -90,6 +92,8 @@ public class ModifyPaletteActivity extends AppCompatActivity {
                 public void onClick(View v) {
                     colors.add("FFFFFF");
                     addColorsToView();
+                    mSelectedColor = buttons.get(colors.size()-1);
+                    mSelectedIndex = buttons.indexOf(mSelectedColor);
                 }
             });
             mLinearLayout.addView(addButton);
