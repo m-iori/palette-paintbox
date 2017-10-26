@@ -29,8 +29,12 @@ public class ColorPickerView extends View {
     private Canvas mBitmapCanvas;
     private Paint mDrawPaint = new Paint();
 
-    ColorPickerView(Context c) {
+    private ModifyPaletteActivity.OnColorChangedListener mListener;
+
+    ColorPickerView(Context c, ModifyPaletteActivity.OnColorChangedListener l) {
         super(c);
+
+        mListener = l;
         mColors = new int[] {
                 0xFFFF0000, 0xFFFF00FF, 0xFF0000FF, 0xFF00FFFF, 0xFF00FF00,
                 0xFFFFFF00, 0xFFFF0000
@@ -70,6 +74,7 @@ public class ColorPickerView extends View {
                 (InputMethodManager) activity.getSystemService(Activity.INPUT_METHOD_SERVICE);
         inputMethodManager.hideSoftInputFromWindow(activity.getCurrentFocus().getWindowToken(), 0);
         int pixel = mBitmap.getPixel(Math.round(event.getX()),Math.round(event.getY()));
+        mListener.colorChanged(pixel);
         //CHECK IF POINT IS IN CIRCLE before doing anything - use distance formula from point to center and compare to radius
         //OR if pixel is white, -1, then ignore it
         //have a listener that sets the color in the linear layout palette_linear_layout
