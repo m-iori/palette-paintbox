@@ -6,17 +6,12 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.graphics.PorterDuff;
 import android.graphics.RectF;
 import android.graphics.Shader;
 import android.graphics.SweepGradient;
-import android.graphics.drawable.Drawable;
-import android.support.v4.content.ContextCompat;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.Button;
-import android.widget.LinearLayout;
 
 public class ColorPickerView extends View {
 
@@ -69,27 +64,16 @@ public class ColorPickerView extends View {
 
     @Override
     public boolean onTouchEvent(MotionEvent event){
+        //Hide keyboard if it's showing
         Activity activity = (Activity)getContext();
         InputMethodManager inputMethodManager =
                 (InputMethodManager) activity.getSystemService(Activity.INPUT_METHOD_SERVICE);
         inputMethodManager.hideSoftInputFromWindow(activity.getCurrentFocus().getWindowToken(), 0);
+
         int pixel = mBitmap.getPixel(Math.round(event.getX()),Math.round(event.getY()));
         mListener.colorChanged(pixel);
         //CHECK IF POINT IS IN CIRCLE before doing anything - use distance formula from point to center and compare to radius
         //OR if pixel is white, -1, then ignore it
-        //have a listener that sets the color in the linear layout palette_linear_layout
-
-//        Drawable backgroundShape = ContextCompat.getDrawable(this.getContext(),R.drawable.color_circle);
-//        backgroundShape.mutate().setColorFilter(pixel, PorterDuff.Mode.MULTIPLY);
-//        Button colorButton = new Button(this.getContext());
-//        colorButton.setBackground(backgroundShape);
-//
-//        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(120,120);
-//        layoutParams.setMargins(5,5,5,5);
-//        colorButton.setLayoutParams(layoutParams);
-//        mLinearLayout.addView(colorButton);
-        System.out.println("touch event");
-        System.out.println(pixel);
         return true;
     }
 

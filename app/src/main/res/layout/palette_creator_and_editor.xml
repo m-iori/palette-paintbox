@@ -24,11 +24,11 @@
         android:layout_height="wrap_content"
         android:hint="Palette Name" />
 
-    <!--EditText
+    <EditText
         android:id="@+id/paletteColorInput"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Hex Code (rrggbb)" /-->
+        android:hint="Hex Code (rrggbb)" />
 
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/palette_linear_layout"

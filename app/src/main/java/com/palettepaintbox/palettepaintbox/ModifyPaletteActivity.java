@@ -5,13 +5,11 @@ import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
-import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -27,11 +25,13 @@ public class ModifyPaletteActivity extends AppCompatActivity {
     LinearLayout mLinearLayout;
     Button mSelectedColor;
     int currentColor;
+    private ArrayList<String> colors;
+    private ArrayList<Button> buttons;
+    private int mSelectedIndex;
 
     public interface OnColorChangedListener {
         void colorChanged(int color);
     }
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,30 +50,72 @@ public class ModifyPaletteActivity extends AppCompatActivity {
 
         OnColorChangedListener l = new OnColorChangedListener() {
             public void colorChanged(int color) {
+                String hexColor = String.format("%06X", (0xFFFFFF & color));
+                EditText hexText = (EditText) findViewById(R.id.paletteColorInput);
+                hexText.setText("#" + hexColor);
                 Drawable backgroundShape = ContextCompat.getDrawable(mLinearLayout.getContext(),R.drawable.color_circle);
                 backgroundShape.mutate().setColorFilter(color, PorterDuff.Mode.MULTIPLY);
                 mSelectedColor.setBackground(backgroundShape);
                 currentColor = color;
+                colors.set(mSelectedIndex, hexColor);
             }
         };
 
-        ColorPickerView colorPickerView= new ColorPickerView(layout.getContext(), l);
+        ColorPickerView colorPickerView = new ColorPickerView(layout.getContext(), l);
         layout.addView(colorPickerView);
-        ArrayList<String> paletteColors = new ArrayList<>();
-        paletteColors.add("FFFFFF");
-        Palette newPalette = new Palette(-1, null, paletteColors);
+
+        colors = new ArrayList<>();
+
+        colors.add("FFFFFF");
 
         mLinearLayout = (LinearLayout) findViewById(R.id.palette_linear_layout);
-        Drawable backgroundShape = ContextCompat.getDrawable(mLinearLayout.getContext(),R.drawable.color_circle);
-        backgroundShape.mutate().setColorFilter(Color.parseColor("#ffffff"), PorterDuff.Mode.MULTIPLY);
-        Button colorButton = new Button(mLinearLayout.getContext());
-        colorButton.setBackground(backgroundShape);
+        addColorsToView();
 
-        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(120,120);
-        layoutParams.setMargins(5,5,5,5);
-        colorButton.setLayoutParams(layoutParams);
-        mLinearLayout.addView(colorButton);
-        mSelectedColor = colorButton;
+    }
+
+    private void addColorsToView(){
+        buttons = new ArrayList<>();
+        mLinearLayout.removeAllViews();
+        for(String color : this.colors) {
+            Drawable backgroundShape = ContextCompat.getDrawable(mLinearLayout.getContext(), R.drawable.color_circle);
+            String hexColor = "#" + color;
+            backgroundShape.mutate().setColorFilter(Color.parseColor(hexColor), PorterDuff.Mode.MULTIPLY);
+            Button colorButton = new Button(mLinearLayout.getContext());
+            colorButton.setBackground(backgroundShape);
+            colorButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    mSelectedColor = (Button)v;
+                    mSelectedIndex = buttons.indexOf(v);
+                }
+            });
+
+            LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(120, 120);
+            layoutParams.setMargins(5, 5, 5, 5);
+            colorButton.setLayoutParams(layoutParams);
+            mLinearLayout.addView(colorButton);
+            buttons.add(colorButton);
+        }
+        mSelectedColor = buttons.get(0);
+
+        if (colors.size() < 6) {
+            Drawable backgroundShape = ContextCompat.getDrawable(mLinearLayout.getContext(), R.drawable.ic_add_black_24dp);
+            Button addButton = new Button(mLinearLayout.getContext());
+            addButton.setBackground(backgroundShape);
+            LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(120, 120);
+            layoutParams.setMargins(5, 5, 5, 5);
+            addButton.setLayoutParams(layoutParams);
+            addButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    colors.add("FFFFFF");
+                    addColorsToView();
+                    mSelectedColor = buttons.get(colors.size()-1);
+                    mSelectedIndex = buttons.indexOf(mSelectedColor);
+                }
+            });
+            mLinearLayout.addView(addButton);
+        }
     }
 
     @Override
@@ -97,12 +139,10 @@ public class ModifyPaletteActivity extends AppCompatActivity {
 
     protected void processNewPalette(AppCompatActivity self){
         ArrayList<String> newColors = new ArrayList<String>();
-        //EditText colorInput = (EditText)(findViewById(R.id.paletteColorInput));
-        //https://stackoverflow.com/questions/6539879/how-to-convert-a-color-integer-to-a-hex-string-in-android
-
-        // Add all new colors here using this trick to convert from int to hex
-        String hexc = String.format("%06X", (0xFFFFFF & currentColor));
-        newColors.add(hexc);
+        
+        for(String c : colors) {
+            newColors.add(c);
+        }
 
         // Get name
         EditText nameInput = (EditText)(findViewById(R.id.paletteNameInput));
