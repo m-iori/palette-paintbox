@@ -3,6 +3,7 @@ package com.palettepaintbox.palettepaintbox;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
+import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
@@ -45,6 +46,8 @@ public class PaletteAdapter extends RecyclerView.Adapter<PaletteAdapter.PaletteH
         public void bindPalette(Palette palette) {
             mPalette = palette;
             mName.setText(palette.getName());
+            mName.setTypeface(mName.getTypeface(), Typeface.BOLD);
+            mName.setTextSize(16);
             for(String color : palette.getColors()){
                 Drawable backgroundShape = ContextCompat.getDrawable(mLinearLayout.getContext(),R.drawable.color_circle);
                 String hexColor = "#" + color;
@@ -55,6 +58,7 @@ public class PaletteAdapter extends RecyclerView.Adapter<PaletteAdapter.PaletteH
                 LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(120,120);
                 layoutParams.setMargins(5,5,5,5);
                 colorButton.setLayoutParams(layoutParams);
+                colorButton.setId(palette.getPaletteID());
                 colorButton.setOnClickListener(goToViewer);
                 mLinearLayout.addView(colorButton);
             }
@@ -67,6 +71,7 @@ public class PaletteAdapter extends RecyclerView.Adapter<PaletteAdapter.PaletteH
     public static OnClickListener goToViewer = new OnClickListener(){
         public void onClick(View v){
             Intent intent = new Intent(v.getContext(), ViewSingleActivity.class);
+            // Depends on the ID of the view being set to the palette ID
             intent.putExtra("paletteID", v.getId());
             v.getContext().startActivity(intent);
         }

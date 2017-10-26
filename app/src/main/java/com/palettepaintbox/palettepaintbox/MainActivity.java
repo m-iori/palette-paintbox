@@ -1,13 +1,10 @@
 package com.palettepaintbox.palettepaintbox;
 
-import android.app.AlertDialog;
 import android.content.ContentValues;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
-import android.support.design.widget.CoordinatorLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
@@ -16,13 +13,8 @@ import android.view.Menu;
 import android.view.View;
 import java.util.ArrayList;
 import java.util.HashMap;
-
 import android.view.MenuItem;
 import android.support.v7.widget.Toolbar;
-import android.widget.CheckBox;
-import android.widget.EditText;
-import android.widget.LinearLayout;
-import android.widget.RadioButton;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -54,7 +46,6 @@ public class MainActivity extends AppCompatActivity {
         // Start the toolbar
         Toolbar tb = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(tb);
-        getSupportActionBar().setDisplayShowTitleEnabled(false);
 
         // Set up RecyclerView
         mRecyclerView = (RecyclerView) findViewById(R.id.recyclerView);
@@ -65,21 +56,30 @@ public class MainActivity extends AppCompatActivity {
         mRecyclerView.addItemDecoration(mDividerItemDecoration);
         mPaletteList = new ArrayList<>();
 
-        //MAKE UP PALETTES FOR TESTING - GET FROM DB LATER
+        // Set up initial placeholder palette
+        ArrayList<String> emptycolors = new ArrayList<>();
+        Palette placeholderPalette = new Palette(-5, "Please tap the + button to create a palette.", emptycolors);
+
+        //MADE UP PALETTES USED IN TESTING
+        /*
         ArrayList<String> testing1 = new ArrayList<>();
-        testing1.add("800000");
-        testing1.add("000000");
-        Palette p1 = new Palette(1, "palette 1", testing1);
+        testing1.add("FF1155");
+        testing1.add("05B291");
+        testing1.add("F074AB");
+        Palette p1 = new Palette(1, "Sample 1", testing1);
 
         ArrayList<String> testing2 = new ArrayList<>();
         testing2.add("FFFF00");
-        Palette p2 = new Palette(2, "palette 2", testing2);
+        testing2.add("FD00DD");
+        testing2.add("F60403");
+        Palette p2 = new Palette(2, "Sample 2", testing2);
 
         mPaletteList.add(p1);
         mPaletteList.add(p2);
-
+        */
         /*TEST*/
         // Adds new palettes
+        /*
         SQLiteDatabase db = mDbHelper.getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put("paletteName", "TestPalette"); // get palette title from UI
@@ -100,13 +100,18 @@ public class MainActivity extends AppCompatActivity {
         values.put("pID", 3);
         values.put("pColor", "0000FF");
         newRowId = db.insert("PalettesToColors", null, values);
+        */
+        /*TEST*/
+
+        //END MAKE UP PALETTES
 
         // Get all the palettes from the data to the view
         viewAllPalettes();
 
-        /*TEST*/
-
-        //END MAKE UP PALETTES
+        //If no palettes, show message prompting user to create some
+        if(mPaletteList.isEmpty()){
+            mPaletteList.add(placeholderPalette);
+        }
 
         // Connect adapter to view
         mAdapter = new PaletteAdapter(mPaletteList);
@@ -128,53 +133,24 @@ public class MainActivity extends AppCompatActivity {
         insertPoint.addView(v, 0, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));*/
     }
 
-    protected void processNewPalette(View v){
-        ArrayList<String> newColors = new ArrayList<String>();
-        EditText colorInput = (EditText)(findViewById(R.id.paletteColorInput));
-        newColors.add(colorInput.getText().toString());
-        EditText nameInput = (EditText)(findViewById(R.id.paletteNameInput));
-        saveNewPalette(nameInput.getText().toString(), newColors);
-        Intent intent = getIntent();
-        startActivity(intent);
-        finish();
-    }
 
-    // Saves a new palette
-    protected void saveNewPalette(String paletteName, ArrayList<String> paletteColors){
-        SQLiteDatabase db = mDbHelper.getWritableDatabase();
-        ContentValues values = new ContentValues();
-
-        values.put("paletteName", paletteName);
-        long pid = db.insert("Palettes", null, values);
-
-        long newRowId;
-
-        for(String color : paletteColors) {
-            // TODO: Check if palette already has 6 colors before inserting!
-            values = new ContentValues();
-            values.put("pID", pid+0);
-            values.put("pColor", color);
-            newRowId = db.insert("PalettesToColors", null, values);
-        }
-
-        onDestroy();
-    }
-
-    // Loads the palette editor
+    // Loads the palette editor - unused, changed to its own activity
     protected void editExistingPalette(){
         setContentView(R.layout.palette_creator_and_editor);
     }
 
-    // Does a DB update
+    // Does a DB update to existing palette
     // TODO: Also save the color order, like color 1, color 2
-    protected void saveExistingPalette(){
+    protected void saveExistingPalette(int paletteID){
         SQLiteDatabase db = mDbHelper.getWritableDatabase();
 
         ContentValues values = new ContentValues();
-        values.put("paletteTitle", "newtitle"); //get the new title from the UI
+        //values.put("paletteTitle", ""); //get the new title from the UI
+        //values.put("", ""); //get the new colors
 
+        // Where paletteID is the palette being updated, perform the update
         String selection = "paletteID" + " = ?";
-        String[] selectionArgs = { "id" };
+        String[] selectionArgs = { "" + paletteID };
 
         int count = db.update(
                 "Palettes",
@@ -189,27 +165,14 @@ public class MainActivity extends AppCompatActivity {
     protected void viewAllPalettes(){
         SQLiteDatabase db = mDbHelper.getReadableDatabase();
 
-        String[] projection = {
-                "p.paletteName",
-                "c.pColor"
-        };
-
-        String selection = "p.paletteID" + " = ?";
-        //String selection = "";
-        String[] selectionArgs = { "c.pID" };
-        //String[] selectionArgs = {};
-
-        String sortOrder =
-                "p.paletteID DESC";
-
+        // SQL to get all palettes
         Cursor cursor = db.rawQuery(
                 "SELECT p.paletteID, p.paletteName, c.pColor FROM Palettes p, PalettesToColors c " +
                         "WHERE p.paletteID = c.pID ORDER BY p.paletteID DESC",
                 null
         );
 
-        //onDestroy();
-
+        // Match up colors with palettes
         for(int i = 0; i < cursor.getCount(); i++) {
             HashMap<Integer,String> paletteNames = new HashMap<Integer,String>();
             HashMap<Integer,ArrayList<String>> paletteColors = new HashMap<Integer,ArrayList<String>>();
@@ -239,8 +202,6 @@ public class MainActivity extends AppCompatActivity {
                 mPaletteList.add(nextPalette);
             }
         }
-
-        //setContentView(R.layout.activity_main);
     }
 
     // Opens the palette creator
@@ -250,22 +211,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
     // Opens the settings
-    protected void viewSettings(){
-        setContentView(R.layout.activity_settings);
-    }
-
-    // Opens the credits
-    protected void viewCredits(View v){
-        AlertDialog alertDialog = new AlertDialog.Builder(MainActivity.this).create();
-        alertDialog.setTitle("Credits");
-        alertDialog.setMessage("\u00A9 Rachel Hogue & Melissa Iori, 2017");
-        alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
-                new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                    }
-                });
-        alertDialog.show();
+    protected void viewSettings(MenuItem item){
+        Intent intent = new Intent(this, PreferencesActivity.class);
+        this.startActivity(intent);
     }
 
     // Saves the new settings
@@ -274,11 +222,14 @@ public class MainActivity extends AppCompatActivity {
     }
 
     // Deletes existing palettes
-    protected void deletePalettes(){
+    protected void deletePalettes(int paletteID){
         SQLiteDatabase db = mDbHelper.getWritableDatabase();
         String selection = "paletteID = ?";
-        String[] selectionArgs = { "id" };
-        db.delete("Palettes", selection, selectionArgs);
+        String[] selectionArgs = { "" + paletteID };
+        db.delete("PalettesToColors", selection, selectionArgs);
+        selection = "paletteID = ?";
+        String[] selectionArgs2 = { "" + paletteID };
+        db.delete("Palettes", selection, selectionArgs2);
         onDestroy();
     }
 
@@ -303,11 +254,12 @@ public class MainActivity extends AppCompatActivity {
         super.onDestroy();
     }
 
+    // Sets up the menu bar
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_settings:
-                viewSettings();
+                viewSettings(item);
                 return true;
 
             case R.id.action_export:
@@ -320,26 +272,8 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_bar, menu);
         return true;
     }
-
-    protected void enableColorCodeSettings(View v){
-        View hex = findViewById(R.id.showHexcode);
-        View rgb = findViewById(R.id.showRGB);
-        hex.setEnabled(true);
-        rgb.setEnabled(true);
-    }
-
-    protected void disableColorCodeSettings(View v){
-        CheckBox hex = (CheckBox) findViewById(R.id.showHexcode);
-        CheckBox rgb = (CheckBox) findViewById(R.id.showRGB);
-        hex.setChecked(false);
-        rgb.setChecked(false);
-        hex.setEnabled(false);
-        rgb.setEnabled(false);
-    }
-
 
 }

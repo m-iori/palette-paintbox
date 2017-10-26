@@ -9,13 +9,13 @@
     tools:context="com.palettepaintbox.palettepaintbox.MainActivity">
 
     <android.support.v7.widget.Toolbar
-        android:id="@+id/toolbar"
+        android:id="@+id/editorToolbar"
         android:minHeight="?attr/actionBarSize"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:titleTextColor="@android:color/white"
+        app:titleTextColor="@android:color/black"
         app:title="Palette Editor"
-        android:background="?attr/colorPrimary">
+        android:background="@android:color/white">
     </android.support.v7.widget.Toolbar>
 
     <EditText
@@ -24,20 +24,11 @@
         android:layout_height="wrap_content"
         android:hint="Palette Name" />
 
-    <EditText
+    <!--EditText
         android:id="@+id/paletteColorInput"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Hex Code (rrggbb)" />
-
-
-    <Button
-        android:id="@+id/button"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:onClick="processNewPalette"
-        android:text="Save"
-    />
+        android:hint="Hex Code (rrggbb)" /-->
 
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/palette_linear_layout"
