@@ -245,13 +245,8 @@ public class MainActivity extends AppCompatActivity {
 
     // Opens the palette creator
     protected void createNewPalette(View v) {
-        setContentView(R.layout.palette_creator_and_editor);
-        LinearLayout layout = (LinearLayout) findViewById(R.id.creator_and_editor);
-        ColorPickerView colorPickerView= new ColorPickerView(layout.getContext());
-        layout.addView(colorPickerView);
-        ArrayList<String> paletteColors = new ArrayList<>();
-        paletteColors.add("FFFFFF");
-        Palette newPalette = new Palette(-1, null, paletteColors);
+        Intent intent = new Intent(MainActivity.this, ModifyPaletteActivity.class);
+        startActivity(intent);
     }
 
     // Opens the settings
