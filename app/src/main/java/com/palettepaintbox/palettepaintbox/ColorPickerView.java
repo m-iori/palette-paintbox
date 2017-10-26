@@ -1,5 +1,6 @@
 package com.palettepaintbox.palettepaintbox;
 
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -13,6 +14,7 @@ import android.graphics.drawable.Drawable;
 import android.support.v4.content.ContextCompat;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.LinearLayout;
 
@@ -63,8 +65,13 @@ public class ColorPickerView extends View {
 
     @Override
     public boolean onTouchEvent(MotionEvent event){
+        Activity activity = (Activity)getContext();
+        InputMethodManager inputMethodManager =
+                (InputMethodManager) activity.getSystemService(Activity.INPUT_METHOD_SERVICE);
+        inputMethodManager.hideSoftInputFromWindow(activity.getCurrentFocus().getWindowToken(), 0);
         int pixel = mBitmap.getPixel(Math.round(event.getX()),Math.round(event.getY()));
         //CHECK IF POINT IS IN CIRCLE before doing anything - use distance formula from point to center and compare to radius
+        //OR if pixel is white, -1, then ignore it
         //have a listener that sets the color in the linear layout palette_linear_layout
 
 //        Drawable backgroundShape = ContextCompat.getDrawable(this.getContext(),R.drawable.color_circle);
