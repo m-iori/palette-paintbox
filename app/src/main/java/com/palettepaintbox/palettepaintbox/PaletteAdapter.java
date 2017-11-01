@@ -29,12 +29,14 @@ public class PaletteAdapter extends RecyclerView.Adapter<PaletteAdapter.PaletteH
         private Palette mPalette;
         private LinearLayout mLinearLayout;
         private TextView mName;
+        private Button mDeleter;
 
         public PaletteHolder(View v) {
             super(v);
             mLinearLayout = v.findViewById(R.id.palette_row_linear_layout);
             mLinearLayout.setOnClickListener(goToViewer);
             mName = v.findViewById(R.id.palette_row_name_text_view);
+            mDeleter = v.findViewById(R.id.deleteButton);
             //v.setOnClickListener(goToViewer); //this
         }
 
@@ -48,6 +50,7 @@ public class PaletteAdapter extends RecyclerView.Adapter<PaletteAdapter.PaletteH
             mName.setText(palette.getName());
             mName.setTypeface(mName.getTypeface(), Typeface.BOLD);
             mName.setTextSize(16);
+            mDeleter.setOnClickListener(deletePalette);
             for(String color : palette.getColors()){
                 Drawable backgroundShape = ContextCompat.getDrawable(mLinearLayout.getContext(),R.drawable.color_circle);
                 String hexColor = "#" + color;
@@ -63,6 +66,7 @@ public class PaletteAdapter extends RecyclerView.Adapter<PaletteAdapter.PaletteH
                 mLinearLayout.addView(colorButton);
             }
             mLinearLayout.setId(palette.getPaletteID());
+            mDeleter.setId(palette.getPaletteID());
         }
     }
 
@@ -73,6 +77,17 @@ public class PaletteAdapter extends RecyclerView.Adapter<PaletteAdapter.PaletteH
             Intent intent = new Intent(v.getContext(), ViewSingleActivity.class);
             // Depends on the ID of the view being set to the palette ID
             intent.putExtra("paletteID", v.getId());
+            v.getContext().startActivity(intent);
+        }
+    };
+
+
+    // Delete onclick
+    public static View.OnClickListener deletePalette = new View.OnClickListener(){
+        public void onClick(View v){
+            Intent intent = new Intent(v.getContext(), MainActivity.class);
+            // Depends on the ID of the view being set to the palette ID
+            intent.putExtra("deletion", v.getId());
             v.getContext().startActivity(intent);
         }
     };

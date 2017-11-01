@@ -9,12 +9,14 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 import java.util.ArrayList;
 import java.util.HashMap;
 import android.view.MenuItem;
 import android.support.v7.widget.Toolbar;
+import android.widget.Button;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -32,6 +34,9 @@ public class MainActivity extends AppCompatActivity {
     private LinearLayoutManager mLinearLayoutManager;
     private DividerItemDecoration mDividerItemDecoration;
 
+    //Flag for delete mode
+    private boolean IN_DELETE_MODE;
+
     // This is called when the app first opens.
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,6 +51,14 @@ public class MainActivity extends AppCompatActivity {
         // Start the toolbar
         Toolbar tb = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(tb);
+
+        //If starting with a deletion, delete that palette
+        Intent i = getIntent();
+        int pid = i.getIntExtra("deletion", -1);
+        //Log.v("thepid", pid + "");
+        if(pid > -1) {
+            deletePalette(pid);
+        }
 
         // Set up RecyclerView
         mRecyclerView = (RecyclerView) findViewById(R.id.recyclerView);
@@ -222,7 +235,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     // Deletes existing palettes
-    protected void deletePalettes(int paletteID){
+    protected void deletePalette(int paletteID){
         SQLiteDatabase db = mDbHelper.getWritableDatabase();
         String selection = "paletteID = ?";
         String[] selectionArgs = { "" + paletteID };
@@ -254,6 +267,17 @@ public class MainActivity extends AppCompatActivity {
         super.onDestroy();
     }
 
+    protected void startDeleteMode(){
+        IN_DELETE_MODE = true;
+        //View deleteButton = this.findViewById(R.id.palette_row_linear_layout_root).findViewById(R.id.deleteButton);
+        //deleteButton.setVisibility(View.VISIBLE);
+    }
+
+    protected void endDeleteMode(){
+        IN_DELETE_MODE = false;
+        recreate();
+    }
+
     // Sets up the menu bar
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -261,6 +285,16 @@ public class MainActivity extends AppCompatActivity {
             case R.id.action_settings:
                 viewSettings(item);
                 return true;
+
+            case R.id.action_delete:
+                if(IN_DELETE_MODE) {
+                    endDeleteMode();
+                    return true;
+                }
+                else{
+                    startDeleteMode();
+                    return true;
+                }
 
             case R.id.action_export:
                 return true;

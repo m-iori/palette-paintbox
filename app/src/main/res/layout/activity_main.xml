@@ -26,6 +26,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:scrollbars="vertical" />
+
         <android.support.design.widget.FloatingActionButton
             android:id="@+id/fab"
             android:layout_width="wrap_content"
@@ -36,7 +37,6 @@
             android:tint="#000"
             app:backgroundTint="#d3d3d3"
             app:fabSize="normal"
-            app:srcCompat="@drawable/ic_add_black_24dp"
-            />
+            app:srcCompat="@drawable/ic_add_black_24dp" />
     </FrameLayout>
 </LinearLayout>

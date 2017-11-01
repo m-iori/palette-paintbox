@@ -11,6 +11,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.CheckBox;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 
 public class PreferencesActivity extends AppCompatActivity {
 
@@ -20,6 +22,28 @@ public class PreferencesActivity extends AppCompatActivity {
         setContentView(R.layout.activity_settings);
         Toolbar toolbar = (Toolbar) findViewById(R.id.settingstoolbar);
         setSupportActionBar(toolbar);
+    }
+
+    protected void applySettings(View v){
+        //RadioButton light = (RadioButton) (v.findViewById(R.id.lightTh));
+        RadioButton dark = v.findViewById(R.id.darkTh);
+        if(dark.isSelected()){
+            darkTheme();
+        }
+        else{
+            lightTheme();
+        }
+    }
+
+    protected void lightTheme(){
+        View mainView = this.findViewById(R.id.settingsLayout);
+        mainView.setBackgroundColor(getColor(R.color.white));
+    }
+
+    protected void darkTheme(){
+        View mainView = this.findViewById(R.id.settingsLayout
+        );
+        mainView.setBackgroundColor(getColor(R.color.black));
     }
 
     // Opens the credits
