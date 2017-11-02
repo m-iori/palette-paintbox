@@ -5,9 +5,9 @@
         android:id="@+id/action_edit"
         android:icon="@drawable/ic_mode_edit_black_24dp"
         app:showAsAction="always"
-        android:title="Edit" />
+        android:title="@string/edit" />
     <item
         android:id="@+id/action_view_all"
         app:showAsAction="always"
-        android:title="VIEW ALL" />
+        android:title="@string/view_all" />
 </menu>

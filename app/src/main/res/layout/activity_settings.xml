@@ -19,7 +19,7 @@
         android:id="@+id/themeH"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Theme"
+        android:text="@string/theme"
         android:textSize="24sp" />
 
     <RadioGroup
@@ -33,21 +33,21 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:checked="true"
-            android:text="Light" />
+            android:text="@string/light" />
 
         <RadioButton
             android:id="@+id/darkTh"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Dark" />
+            android:text="@string/dark" />
     </RadioGroup>
 
     <TextView
         android:id="@+id/colorDataH"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Color Data Display Format"
+        android:text="@string/color_data_display_format"
         android:textSize="24sp" />
 
     <RadioGroup
@@ -61,7 +61,7 @@
             android:onClick="enableColorCodeSettings"
             android:layout_weight="1"
             android:checked="true"
-            android:text="Show" />
+            android:text="@string/show" />
 
         <CheckBox
             android:id="@+id/showHexcode"
@@ -69,14 +69,14 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:checked="true"
-            android:text="Hex Code (#rrggbb)" />
+            android:text="@string/hex_code" />
 
         <CheckBox
             android:id="@+id/showRGB"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="RGB (rrr, ggg, bbb)" />
+            android:text="@string/rgb" />
 
         <RadioButton
             android:id="@+id/radioButton3"
@@ -84,7 +84,7 @@
             android:layout_height="wrap_content"
             android:onClick="disableColorCodeSettings"
             android:layout_weight="1"
-            android:text="None" />
+            android:text="@string/none" />
     </RadioGroup>
 
     <TextView
@@ -92,12 +92,12 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:onClick="viewCredits"
-        android:text="Credits"
+        android:text="@string/credits"
         android:textSize="24sp" />
 
     <Button
         android:id="@+id/applySettings"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Apply" />
+        android:text="@string/apply" />
 </LinearLayout>

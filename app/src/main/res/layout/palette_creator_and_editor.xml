@@ -14,7 +14,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:titleTextColor="@android:color/black"
-        app:title="Palette Editor"
+        app:title="@string/palette_editor"
         android:background="@android:color/white">
     </android.support.v7.widget.Toolbar>
 
@@ -22,13 +22,13 @@
         android:id="@+id/paletteNameInput"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:hint="Palette Name" />
+        android:hint="@string/palette_name" />
 
     <EditText
         android:id="@+id/paletteColorInput"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Hex Code (rrggbb)" />
+        android:hint="@string/hex_code" />
 
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/palette_linear_layout"
