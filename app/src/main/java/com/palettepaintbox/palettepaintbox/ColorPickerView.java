@@ -74,7 +74,15 @@ public class ColorPickerView extends View {
         mListener.colorChanged(pixel);
         //CHECK IF POINT IS IN CIRCLE before doing anything - use distance formula from point to center and compare to radius
         //OR if pixel is white, -1, then ignore it
+        if (event.getAction() == MotionEvent.ACTION_DOWN) {
+            performClick();
+        }
         return true;
+    }
+
+    @Override
+    public boolean performClick() {
+        return super.performClick();
     }
 
 }
