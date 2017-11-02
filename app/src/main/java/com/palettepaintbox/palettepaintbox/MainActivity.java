@@ -1,6 +1,8 @@
 package com.palettepaintbox.palettepaintbox;
 
+import android.app.AlertDialog;
 import android.content.ContentValues;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -12,11 +14,14 @@ import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.Menu;
 import android.view.View;
+import com.crashlytics.android.Crashlytics;
+import io.fabric.sdk.android.Fabric;
 import java.util.ArrayList;
 import java.util.HashMap;
 import android.view.MenuItem;
 import android.support.v7.widget.Toolbar;
 import android.widget.Button;
+import android.widget.LinearLayout;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -41,6 +46,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Fabric.with(this, new Crashlytics());
 
         // Set up database helper
         mDbHelper = new FeedReaderDbHelper(this);
@@ -54,10 +60,28 @@ public class MainActivity extends AppCompatActivity {
 
         //If starting with a deletion, delete that palette
         Intent i = getIntent();
-        int pid = i.getIntExtra("deletion", -1);
+        final int pid = i.getIntExtra("deletion", -1);
         //Log.v("thepid", pid + "");
         if(pid > -1) {
-            deletePalette(pid);
+            AlertDialog alertDialog = new AlertDialog.Builder(MainActivity.this).create();
+            alertDialog.setTitle("Palette Deletion");
+            alertDialog.setMessage("Are you sure you want to delete this palette?");
+            alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "YES",
+                    new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                            deletePalette(pid);
+                            Intent intent = new Intent(MainActivity.this, MainActivity.class);
+                            startActivity(intent);
+                        }
+                    });
+            alertDialog.setButton(AlertDialog.BUTTON_NEGATIVE, "NO",
+                    new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                        }
+                    });
+            alertDialog.show();
         }
 
         // Set up RecyclerView
@@ -237,13 +261,13 @@ public class MainActivity extends AppCompatActivity {
     // Deletes existing palettes
     protected void deletePalette(int paletteID){
         SQLiteDatabase db = mDbHelper.getWritableDatabase();
-        String selection = "paletteID = ?";
+        String selection = "pid = ?";
         String[] selectionArgs = { "" + paletteID };
         db.delete("PalettesToColors", selection, selectionArgs);
         selection = "paletteID = ?";
         String[] selectionArgs2 = { "" + paletteID };
         db.delete("Palettes", selection, selectionArgs2);
-        onDestroy();
+        //onDestroy();
     }
 
     // Later features
@@ -269,8 +293,21 @@ public class MainActivity extends AppCompatActivity {
 
     protected void startDeleteMode(){
         IN_DELETE_MODE = true;
-        //View deleteButton = this.findViewById(R.id.palette_row_linear_layout_root).findViewById(R.id.deleteButton);
-        //deleteButton.setVisibility(View.VISIBLE);
+        RecyclerView recycler = (RecyclerView)(this.findViewById(R.id.recyclerView));
+        int palettes = recycler.getChildCount();
+        for(int i = 0; i < palettes; i++){
+            LinearLayout ll = (LinearLayout)(recycler.getChildAt(i));
+            int elements = ll.getChildCount();
+            for(int j = 0; j < elements; j++){
+                View v = ll.getChildAt(j);
+                if(v instanceof Button){
+                    Button deleteButton = (Button)(v);
+                    if(deleteButton.getText().equals("X")){
+                        deleteButton.setVisibility(View.VISIBLE);
+                    }
+                }
+            }
+        }
     }
 
     protected void endDeleteMode(){

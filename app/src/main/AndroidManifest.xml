@@ -34,6 +34,10 @@
             android:name=".PreferencesActivity"
             android:label="@string/title_activity_preferences"
             android:theme="@style/AppTheme"></activity>
+        <meta-data
+            android:name="io.fabric.ApiKey"
+            android:value="key here" />
     </application>
 
+    <uses-permission android:name="android.permission.INTERNET" />
 </manifest>
