@@ -218,7 +218,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     // Opens the palette creator
-    protected void createNewPalette(View v) {
+    public void createNewPalette(View v) {
         Intent intent = new Intent(MainActivity.this, ModifyPaletteActivity.class);
         startActivity(intent);
     }

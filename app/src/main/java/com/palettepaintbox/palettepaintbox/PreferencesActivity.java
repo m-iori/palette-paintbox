@@ -47,7 +47,7 @@ public class PreferencesActivity extends AppCompatActivity {
     }
 
     // Opens the credits
-    protected void viewCredits(View v){
+    public void viewCredits(View v){
         AlertDialog alertDialog = new AlertDialog.Builder(PreferencesActivity.this).create();
         alertDialog.setTitle("Credits");
         alertDialog.setMessage("\u00A9 Rachel Hogue & Melissa Iori, 2017");
@@ -60,14 +60,14 @@ public class PreferencesActivity extends AppCompatActivity {
         alertDialog.show();
     }
 
-    protected void enableColorCodeSettings(View v){
+    public void enableColorCodeSettings(View v){
         View hex = findViewById(R.id.showHexcode);
         View rgb = findViewById(R.id.showRGB);
         hex.setEnabled(true);
         rgb.setEnabled(true);
     }
 
-    protected void disableColorCodeSettings(View v){
+    public void disableColorCodeSettings(View v){
         CheckBox hex = (CheckBox) findViewById(R.id.showHexcode);
         CheckBox rgb = (CheckBox) findViewById(R.id.showRGB);
         hex.setChecked(false);
