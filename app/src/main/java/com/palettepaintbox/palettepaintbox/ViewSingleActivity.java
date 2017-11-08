@@ -61,9 +61,6 @@ public class ViewSingleActivity extends AppCompatActivity {
     protected ArrayList<Palette> viewSinglePalette(ArrayList<com.palettepaintbox.palettepaintbox.Palette> plist,int paletteID){
         SQLiteDatabase db = mDbHelper.getReadableDatabase();
 
-        String sortOrder =
-                "p.paletteID DESC";
-
         Cursor cursor = db.rawQuery(
                 "SELECT p.paletteName, c.pColor FROM Palettes p, PalettesToColors c " +
                         "WHERE p.paletteID = c.pID AND p.paletteID = '" + paletteID + "' ORDER BY p.paletteID DESC",

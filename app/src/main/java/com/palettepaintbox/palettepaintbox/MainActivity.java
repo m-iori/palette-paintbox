@@ -97,51 +97,6 @@ public class MainActivity extends AppCompatActivity {
         ArrayList<String> emptycolors = new ArrayList<>();
         Palette placeholderPalette = new Palette(-5, "Please tap the + button to create a palette.", emptycolors);
 
-        //MADE UP PALETTES USED IN TESTING
-        /*
-        ArrayList<String> testing1 = new ArrayList<>();
-        testing1.add("FF1155");
-        testing1.add("05B291");
-        testing1.add("F074AB");
-        Palette p1 = new Palette(1, "Sample 1", testing1);
-
-        ArrayList<String> testing2 = new ArrayList<>();
-        testing2.add("FFFF00");
-        testing2.add("FD00DD");
-        testing2.add("F60403");
-        Palette p2 = new Palette(2, "Sample 2", testing2);
-
-        mPaletteList.add(p1);
-        mPaletteList.add(p2);
-        */
-        /*TEST*/
-        // Adds new palettes
-        /*
-        SQLiteDatabase db = mDbHelper.getWritableDatabase();
-        ContentValues values = new ContentValues();
-        values.put("paletteName", "TestPalette"); // get palette title from UI
-        long newRowId = db.insert("Palettes", null, values);
-
-        // TODO: Check if palette already has 6 colors before inserting!
-        values = new ContentValues();
-        values.put("pID", 3);
-        values.put("pColor", "FF0000");
-        newRowId = db.insert("PalettesToColors", null, values);
-
-        values = new ContentValues();
-        values.put("pID", 3);
-        values.put("pColor", "00FF00");
-        newRowId = db.insert("PalettesToColors", null, values);
-
-        values = new ContentValues();
-        values.put("pID", 3);
-        values.put("pColor", "0000FF");
-        newRowId = db.insert("PalettesToColors", null, values);
-        */
-        /*TEST*/
-
-        //END MAKE UP PALETTES
-
         // Get all the palettes from the data to the view
         viewAllPalettes();
 
@@ -153,49 +108,6 @@ public class MainActivity extends AppCompatActivity {
         // Connect adapter to view
         mAdapter = new PaletteAdapter(mPaletteList);
         mRecyclerView.setAdapter(mAdapter);
-
-        // A PaletteView is a custom view which we create.
-        // We can get palettes from the database.
-        // Then, we load the colors from that palette data into a PaletteView.
-        // The PaletteView is several circle Shapes drawn onto a Canvas with the defined color of Paint.
-
-        // https://stackoverflow.com/questions/6216547/android-dynamically-add-views-into-view
-        /*LayoutInflater vi = (LayoutInflater) getApplicationContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View v = vi.inflate(R.layout.your_layout, null);
-
-        PaletteView paletteView = (PaletteView) new PaletteView(this, new AttributeSet());
-        textView.setText("your text");
-
-        ViewGroup insertPoint = (ViewGroup) findViewById(R.id.insert_point);
-        insertPoint.addView(v, 0, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));*/
-    }
-
-
-    // Loads the palette editor - unused, changed to its own activity
-    protected void editExistingPalette(){
-        setContentView(R.layout.palette_creator_and_editor);
-    }
-
-    // Does a DB update to existing palette
-    // TODO: Also save the color order, like color 1, color 2
-    protected void saveExistingPalette(int paletteID){
-        SQLiteDatabase db = mDbHelper.getWritableDatabase();
-
-        ContentValues values = new ContentValues();
-        //values.put("paletteTitle", ""); //get the new title from the UI
-        //values.put("", ""); //get the new colors
-
-        // Where paletteID is the palette being updated, perform the update
-        String selection = "paletteID" + " = ?";
-        String[] selectionArgs = { "" + paletteID };
-
-        int count = db.update(
-                "Palettes",
-                values,
-                selection,
-                selectionArgs);
-
-        onDestroy();
     }
 
     // Shows all palettes
