@@ -10,12 +10,12 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.SparseArray;
 import android.view.Menu;
 import android.view.View;
 import com.crashlytics.android.Crashlytics;
 import io.fabric.sdk.android.Fabric;
 import java.util.ArrayList;
-import java.util.HashMap;
 import android.view.MenuItem;
 import android.support.v7.widget.Toolbar;
 import android.widget.Button;
@@ -121,18 +121,19 @@ public class ViewAllActivity extends AppCompatActivity {
 
         // Match up colors with palettes
         for(int i = 0; i < cursor.getCount(); i++) {
-            HashMap<Integer,String> paletteNames = new HashMap<Integer,String>();
-            HashMap<Integer,ArrayList<String>> paletteColors = new HashMap<Integer,ArrayList<String>>();
+            SparseArray<String> paletteNames = new SparseArray<>();
+            SparseArray<ArrayList<String>> paletteColors = new SparseArray<>();
 
             try {
                 while (cursor.moveToNext()) {
                     Integer paletteID = cursor.getInt(cursor.getColumnIndex("paletteID"));
                     String paletteName = cursor.getString(cursor.getColumnIndex("paletteName"));
-                    if(!(paletteNames.containsKey(paletteID))){
+                    System.out.println(paletteNames.indexOfKey(paletteID));
+                    if(paletteNames.indexOfKey(paletteID) < 0){
                         paletteNames.put(paletteID, paletteName);
                     }
-                    if(!(paletteColors.containsKey(paletteID))){
-                        ArrayList<String> pcolors = new ArrayList<String>();
+                    if(paletteColors.indexOfKey(paletteID) < 0){
+                        ArrayList<String> pcolors = new ArrayList<>();
                         paletteColors.put(paletteID, pcolors);
                     }
                     paletteColors.get(paletteID).add(cursor.getString(cursor.getColumnIndex("pColor")));
@@ -142,7 +143,8 @@ public class ViewAllActivity extends AppCompatActivity {
             }
 
             // TODO: Put DB cursor in with the Adapter
-            for(int id : paletteNames.keySet()){
+            for(int j = 0; j < paletteNames.size(); j++) {
+                int id = paletteNames.keyAt(j);
                 String pName = paletteNames.get(id);
                 ArrayList<String> pColors = paletteColors.get(id);
                 Palette nextPalette = new Palette(id, pName, pColors);
