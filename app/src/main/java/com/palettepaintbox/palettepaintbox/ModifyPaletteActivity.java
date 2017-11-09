@@ -94,7 +94,8 @@ public class ModifyPaletteActivity extends AppCompatActivity {
             public void colorChanged(int color) {
                 String hexColor = String.format("%06X", (0xFFFFFF & color));
                 EditText hexText = (EditText) findViewById(R.id.paletteColorInput);
-                hexText.setText("#" + hexColor);
+                String colorWithHash = "#" + hexColor;
+                hexText.setText(colorWithHash);
                 Drawable backgroundShape = ContextCompat.getDrawable(mLinearLayout.getContext(), R.drawable.color_circle);
                 backgroundShape.mutate().setColorFilter(color, PorterDuff.Mode.MULTIPLY);
                 mSelectedColor.setBackground(backgroundShape);
