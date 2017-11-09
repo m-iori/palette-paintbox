@@ -20,7 +20,6 @@ import java.util.ArrayList;
 public class ViewSingleActivity extends AppCompatActivity {
 
     private PaletteAdapter mAdapter;
-    private FeedReaderDbHelper mDbHelper;
     int currentPID;
 
     // This is called when the app first opens.
@@ -28,12 +27,9 @@ public class ViewSingleActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        // Database helper
-        mDbHelper = new FeedReaderDbHelper(this);
-
         // Set view and toolbar
         setContentView(R.layout.activity_palette_single_viewer);
-        Toolbar tb = (Toolbar) findViewById(R.id.paletteToolbar);
+        Toolbar tb = findViewById(R.id.paletteToolbar);
         setSupportActionBar(tb);
 
         // Load the palette

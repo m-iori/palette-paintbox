@@ -71,6 +71,7 @@ public class ViewAllActivity extends AppCompatActivity {
                             Palette.deletePalette(getApplicationContext(), pid);
                             Intent intent = new Intent(ViewAllActivity.this, ViewAllActivity.class);
                             startActivity(intent);
+                            finish();
                         }
                     });
             alertDialog.setButton(AlertDialog.BUTTON_NEGATIVE, "NO",
