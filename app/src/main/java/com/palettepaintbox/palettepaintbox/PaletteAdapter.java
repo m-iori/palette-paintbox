@@ -1,6 +1,5 @@
 package com.palettepaintbox.palettepaintbox;
 
-import android.app.AlertDialog;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
@@ -16,8 +15,6 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.view.View.OnClickListener;
-import android.app.Activity;
-import android.content.Context;
 
 import java.util.ArrayList;
 
@@ -86,7 +83,7 @@ public class PaletteAdapter extends RecyclerView.Adapter<PaletteAdapter.PaletteH
     // Delete onclick
     public static View.OnClickListener deletePalette = new View.OnClickListener(){
         public void onClick(View v){
-            Intent intent = new Intent(v.getContext(), MainActivity.class);
+            Intent intent = new Intent(v.getContext(), ViewAllActivity.class);
             // Depends on the ID of the view being set to the palette ID
             intent.putExtra("deletion", v.getId());
             v.getContext().startActivity(intent);

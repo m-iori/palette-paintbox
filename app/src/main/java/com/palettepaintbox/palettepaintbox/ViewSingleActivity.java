@@ -97,7 +97,7 @@ public class ViewSingleActivity extends AppCompatActivity {
                 return true;
 
             case R.id.action_view_all:
-                Intent intent_view_all = new Intent(this, MainActivity.class);
+                Intent intent_view_all = new Intent(this, ViewAllActivity.class);
                 this.startActivity(intent_view_all);
                 return true;
 

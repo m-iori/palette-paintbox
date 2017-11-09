@@ -1,7 +1,6 @@
 package com.palettepaintbox.palettepaintbox;
 
 import android.app.AlertDialog;
-import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
@@ -11,7 +10,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 import com.crashlytics.android.Crashlytics;
@@ -23,7 +21,7 @@ import android.support.v7.widget.Toolbar;
 import android.widget.Button;
 import android.widget.LinearLayout;
 
-public class MainActivity extends AppCompatActivity {
+public class ViewAllActivity extends AppCompatActivity {
 
     // This is the database reader.
     private FeedReaderDbHelper mDbHelper;
@@ -63,7 +61,7 @@ public class MainActivity extends AppCompatActivity {
         final int pid = i.getIntExtra("deletion", -1);
         //Log.v("thepid", pid + "");
         if(pid > -1) {
-            AlertDialog alertDialog = new AlertDialog.Builder(MainActivity.this).create();
+            AlertDialog alertDialog = new AlertDialog.Builder(ViewAllActivity.this).create();
             alertDialog.setTitle("Palette Deletion");
             alertDialog.setMessage("Are you sure you want to delete this palette?");
             alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "YES",
@@ -71,7 +69,7 @@ public class MainActivity extends AppCompatActivity {
                         public void onClick(DialogInterface dialog, int which) {
                             dialog.dismiss();
                             deletePalette(pid);
-                            Intent intent = new Intent(MainActivity.this, MainActivity.class);
+                            Intent intent = new Intent(ViewAllActivity.this, ViewAllActivity.class);
                             startActivity(intent);
                         }
                     });
@@ -155,7 +153,7 @@ public class MainActivity extends AppCompatActivity {
 
     // Opens the palette creator
     public void createNewPalette(View v) {
-        Intent intent = new Intent(MainActivity.this, ModifyPaletteActivity.class);
+        Intent intent = new Intent(ViewAllActivity.this, ModifyPaletteActivity.class);
         startActivity(intent);
     }
 
