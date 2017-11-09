@@ -1,9 +1,6 @@
 package com.palettepaintbox.palettepaintbox;
 
-import android.content.ContentValues;
 import android.content.Intent;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
@@ -11,7 +8,6 @@ import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -23,7 +19,6 @@ import java.util.ArrayList;
 
 public class ModifyPaletteActivity extends AppCompatActivity {
 
-    private FeedReaderDbHelper mDbHelper;
     LinearLayout mLinearLayout;
     Button mSelectedColor;
     int currentColor;
@@ -43,12 +38,10 @@ public class ModifyPaletteActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.palette_creator_and_editor);
-        LinearLayout layout = (LinearLayout) findViewById(R.id.creator_and_editor);
+        LinearLayout layout = findViewById(R.id.creator_and_editor);
 
-        mDbHelper = new FeedReaderDbHelper(this);
-
-        nameInput = (EditText)(findViewById(R.id.paletteNameInput));
-        hexText = (EditText) findViewById(R.id.paletteColorInput);
+        nameInput = findViewById(R.id.paletteNameInput);
+        hexText = findViewById(R.id.paletteColorInput);
 
         Toolbar tb = (Toolbar) findViewById(R.id.editorToolbar);
         setSupportActionBar(tb);
@@ -59,31 +52,13 @@ public class ModifyPaletteActivity extends AppCompatActivity {
         paletteID = i.getIntExtra("paletteID", -1);
 
         if(paletteID > -1) {
-            SQLiteDatabase db = mDbHelper.getReadableDatabase();
-
-            Cursor cursor = db.rawQuery(
-                    "SELECT p.paletteName, c.pColor FROM Palettes p, PalettesToColors c " +
-                            "WHERE p.paletteID = c.pID AND p.paletteID = '" + paletteID + "' ORDER BY p.paletteID DESC",
-                    null
-            );
-
-            String paletteName = "Palette not found.";
-            String hexCode = "FFFFFF";
-            int p=0;
-            try {
-                while (cursor.moveToNext()) {
-                    Log.v("datadata", cursor.getString(cursor.getColumnIndex("pColor")));
-                    colors.add(cursor.getString(cursor.getColumnIndex("pColor")));
-                    if (p==0) {
-                        paletteName = cursor.getString(cursor.getColumnIndex("paletteName"));
-                        hexCode = "#" + colors.get(0);
-                    }
-                    p++;
-                }
-            } finally {
-                cursor.close();
+            Palette palette = Palette.getPalette(this, paletteID);
+            nameInput.setText(palette.getName());
+            String hexCode = "#FFFFFF";
+            colors=palette.getColors();
+            if (colors.size() > 0) {
+                hexCode = colors.get(colors.size()-1);
             }
-            nameInput.setText(paletteName);
             hexText.setText(hexCode);
 
         } else {
@@ -178,10 +153,11 @@ public class ModifyPaletteActivity extends AppCompatActivity {
 
     protected void processSavePalette(AppCompatActivity self){
         // Save in database
+        String paletteName = nameInput.getText().toString();
         if (paletteID > -1) {
-            updateExistingPalette(nameInput.getText().toString());
+            Palette.updatePalette(this, new Palette(paletteID, paletteName, colors));
         } else {
-            paletteID = saveNewPalette(nameInput.getText().toString(), colors);
+            paletteID = Palette.createPalette(this, new Palette(-1, paletteName, colors));
         }
 
         // Opens the Single View
@@ -191,37 +167,7 @@ public class ModifyPaletteActivity extends AppCompatActivity {
         finish();
     }
 
-    // Saves a new palette
-    public int saveNewPalette(String paletteName, ArrayList<String> paletteColors){
-        return Palette.createPalette(this, new Palette(-1,paletteName,paletteColors));
-    }
-
-    // Updates an existing palette
-    public void updateExistingPalette(String paletteName){
-        SQLiteDatabase db = mDbHelper.getWritableDatabase();
-        ContentValues values = new ContentValues();
-
-        String paletteFilter = "paletteID=" + paletteID;
-        // Add the palette
-        values.put("paletteName", paletteName);
-        db.update("Palettes", values, paletteFilter, null);
-
-        //delete existing colors for palette
-        String colorFilter = "pID=" + paletteID;
-        db.delete("PalettesToColors",colorFilter,null);
-
-        for(String color : colors) {
-            //add colors for palette
-            values = new ContentValues();
-            values.put("pID", paletteID);
-            values.put("pColor", color);
-            db.insert("PalettesToColors", null, values);
-        }
-        db.close();
-    }
-
     protected void onDestroy() {
-        mDbHelper.close();
         super.onDestroy();
     }
 }

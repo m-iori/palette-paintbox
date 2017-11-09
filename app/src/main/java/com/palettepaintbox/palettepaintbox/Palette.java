@@ -104,4 +104,33 @@ public class Palette implements Serializable{
 
         return new Palette(paletteID, paletteName, paletteColors);
     }
+
+    public static boolean updatePalette(Context context, Palette palette) {
+        FeedReaderDbHelper feedReaderDbHelper = new FeedReaderDbHelper(context);
+        SQLiteDatabase db = feedReaderDbHelper.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+
+        int paletteID = palette.getPaletteID();
+
+        String paletteFilter = "paletteID=" + paletteID;
+        // Add the palette
+        values.put("paletteName", palette.getName());
+        db.update("Palettes", values, paletteFilter, null);
+
+        //delete existing colors for palette
+        String colorFilter = "pID=" + paletteID;
+        db.delete("PalettesToColors",colorFilter,null);
+
+        for(String color : palette.getColors()) {
+            //add colors for palette
+            values = new ContentValues();
+            values.put("pID", paletteID);
+            values.put("pColor", color);
+            db.insert("PalettesToColors", null, values);
+        }
+        db.close();
+        return true;
+    }
+
 }
