@@ -9,6 +9,7 @@ import android.graphics.Paint;
 import android.graphics.RectF;
 import android.graphics.Shader;
 import android.graphics.SweepGradient;
+import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
@@ -17,7 +18,10 @@ public class ColorPickerView extends View {
 
     private int centerX, centerY;
 
-    private final int[] mColors;
+    private final int[] mColors = new int[] {
+            0xFFFF0000, 0xFFFF00FF, 0xFF0000FF, 0xFF00FFFF, 0xFF00FF00,
+            0xFFFFFF00, 0xFFFF0000
+    };
     private Paint mPaint;
 
     private Bitmap mBitmap;
@@ -26,22 +30,28 @@ public class ColorPickerView extends View {
 
     private ModifyPaletteActivity.OnColorChangedListener mListener;
 
-    ColorPickerView(Context c, ModifyPaletteActivity.OnColorChangedListener l) {
+    public ColorPickerView(Context c, ModifyPaletteActivity.OnColorChangedListener l) {
         super(c);
-
         mListener = l;
-        mColors = new int[] {
-                0xFFFF0000, 0xFFFF00FF, 0xFF0000FF, 0xFF00FFFF, 0xFF00FF00,
-                0xFFFFFF00, 0xFFFF0000
-        };
+        initializeView();
+    }
 
+    public ColorPickerView(Context context) {
+        super(context);
+        initializeView();
+    }
+    public ColorPickerView(Context context, AttributeSet attrs) {
+        super(context, attrs);
+        initializeView();
+    }
+
+    private void initializeView(){
         Shader s = new SweepGradient(0, 0, mColors, null);
 
         mPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         mPaint.setShader(s);
         mPaint.setStyle(Paint.Style.STROKE);
         mPaint.setStrokeWidth(300);
-
     }
 
     @Override
