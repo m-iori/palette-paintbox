@@ -68,7 +68,7 @@ public class ViewAllActivity extends AppCompatActivity {
                     new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int which) {
                             dialog.dismiss();
-                            deletePalette(pid);
+                            Palette.deletePalette(getApplicationContext(), pid);
                             Intent intent = new Intent(ViewAllActivity.this, ViewAllActivity.class);
                             startActivity(intent);
                         }
@@ -163,18 +163,6 @@ public class ViewAllActivity extends AppCompatActivity {
     protected void viewSettings(MenuItem item){
         Intent intent = new Intent(this, PreferencesActivity.class);
         this.startActivity(intent);
-    }
-
-    // Deletes existing palettes
-    protected void deletePalette(int paletteID){
-        SQLiteDatabase db = mDbHelper.getWritableDatabase();
-        String selection = "pid = ?";
-        String[] selectionArgs = { "" + paletteID };
-        db.delete("PalettesToColors", selection, selectionArgs);
-        selection = "paletteID = ?";
-        String[] selectionArgs2 = { "" + paletteID };
-        db.delete("Palettes", selection, selectionArgs2);
-        //onDestroy();
     }
 
     // Later features

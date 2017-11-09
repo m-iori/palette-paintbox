@@ -193,24 +193,7 @@ public class ModifyPaletteActivity extends AppCompatActivity {
 
     // Saves a new palette
     public int saveNewPalette(String paletteName, ArrayList<String> paletteColors){
-        SQLiteDatabase db = mDbHelper.getWritableDatabase();
-        ContentValues values = new ContentValues();
-
-        // Add the name
-        values.put("paletteName", paletteName);
-        long pid = db.insert("Palettes", null, values);
-
-
-        for(String color : paletteColors) {
-            // TODO: Check if palette already has 6 colors before inserting!
-            values = new ContentValues();
-            values.put("pID", pid+0);
-            values.put("pColor", color);
-            db.insert("PalettesToColors", null, values);
-        }
-
-        mDbHelper.close();
-        return (int)(pid);
+        return Palette.createPalette(this, new Palette(-1,paletteName,paletteColors));
     }
 
     // Updates an existing palette

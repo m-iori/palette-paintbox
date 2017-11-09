@@ -1,5 +1,9 @@
 package com.palettepaintbox.palettepaintbox;
 
+import android.content.ContentValues;
+import android.content.Context;
+import android.database.sqlite.SQLiteDatabase;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 
@@ -29,5 +33,43 @@ public class Palette implements Serializable{
 
     public int getPaletteID(){
         return paletteID;
+    }
+
+    //STATIC FUNCTIONS TO MODIFY PALETTES IN THE DB
+
+    public static boolean deletePalette(Context context, int paletteID) {
+        FeedReaderDbHelper feedReaderDbHelper = new FeedReaderDbHelper(context);
+        SQLiteDatabase db = feedReaderDbHelper.getWritableDatabase();
+        String selection = "pid = ?";
+        String[] selectionArgs = { "" + paletteID };
+        db.delete("PalettesToColors", selection, selectionArgs);
+        selection = "paletteID = ?";
+        String[] selectionArgs2 = { "" + paletteID };
+        db.delete("Palettes", selection, selectionArgs2);
+        feedReaderDbHelper.close();
+        return true;
+    }
+
+    public static int createPalette(Context context, Palette palette) {
+        FeedReaderDbHelper feedReaderDbHelper = new FeedReaderDbHelper(context);
+        SQLiteDatabase db = feedReaderDbHelper.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+
+        // Add the name
+        values.put("paletteName", palette.getName());
+        long pid = db.insert("Palettes", null, values);
+
+
+        for(String color : palette.getColors()) {
+            // TODO: Check if palette already has 6 colors before inserting!
+            values = new ContentValues();
+            values.put("pID", pid+0);
+            values.put("pColor", color);
+            db.insert("PalettesToColors", null, values);
+        }
+
+        feedReaderDbHelper.close();
+        return (int)(pid);
     }
 }

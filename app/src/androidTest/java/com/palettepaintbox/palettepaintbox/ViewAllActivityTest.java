@@ -21,9 +21,10 @@ public class ViewAllActivityTest {
      * Test that the title is correct.
      */
     @Test
-    public void lastItem_NotDisplayed() {
-        Toolbar mToolbar = (Toolbar)mActivityRule.getActivity().findViewById(R.id.toolbar);
+    public void titleIsCorrect() {
+        Toolbar mToolbar = mActivityRule.getActivity().findViewById(R.id.toolbar);
         assertEquals("Palette Paintbox", mToolbar.getTitle());
     }
+
 
 }
