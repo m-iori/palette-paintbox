@@ -19,7 +19,7 @@
         android:background="#880000"
         android:textColor="#FFFFFF"
         android:visibility="gone"
-        android:text="X" />
+        android:text="@string/delete_x" />
 
     <LinearLayout
         android:id="@+id/palette_row_linear_layout"
