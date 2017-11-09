@@ -179,7 +179,7 @@ public class ModifyPaletteActivity extends AppCompatActivity {
     protected void processSavePalette(AppCompatActivity self){
         // Save in database
         if (paletteID > -1) {
-            updateExistingPalette(nameInput.getText().toString(), colors);
+            updateExistingPalette(nameInput.getText().toString());
         } else {
             paletteID = saveNewPalette(nameInput.getText().toString(), colors);
         }
@@ -197,29 +197,27 @@ public class ModifyPaletteActivity extends AppCompatActivity {
     }
 
     // Updates an existing palette
-    public int updateExistingPalette(String paletteName, ArrayList<String> paletteColors){
+    public void updateExistingPalette(String paletteName){
         SQLiteDatabase db = mDbHelper.getWritableDatabase();
         ContentValues values = new ContentValues();
 
         String paletteFilter = "paletteID=" + paletteID;
         // Add the palette
         values.put("paletteName", paletteName);
-        long pid = db.update("Palettes", values, paletteFilter, null);
+        db.update("Palettes", values, paletteFilter, null);
+
         //delete existing colors for palette
         String colorFilter = "pID=" + paletteID;
         db.delete("PalettesToColors",colorFilter,null);
 
-        System.out.print(colors);
         for(String color : colors) {
             //add colors for palette
             values = new ContentValues();
-            values.put("pID", pid+0);
+            values.put("pID", paletteID);
             values.put("pColor", color);
             db.insert("PalettesToColors", null, values);
         }
-
-        mDbHelper.close();
-        return (int)(pid);
+        db.close();
     }
 
     protected void onDestroy() {

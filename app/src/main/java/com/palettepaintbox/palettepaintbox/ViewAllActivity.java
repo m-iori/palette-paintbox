@@ -128,7 +128,6 @@ public class ViewAllActivity extends AppCompatActivity {
                 while (cursor.moveToNext()) {
                     Integer paletteID = cursor.getInt(cursor.getColumnIndex("paletteID"));
                     String paletteName = cursor.getString(cursor.getColumnIndex("paletteName"));
-                    System.out.println(paletteNames.indexOfKey(paletteID));
                     if(paletteNames.indexOfKey(paletteID) < 0){
                         paletteNames.put(paletteID, paletteName);
                     }
@@ -188,7 +187,7 @@ public class ViewAllActivity extends AppCompatActivity {
 
     protected void startDeleteMode(){
         IN_DELETE_MODE = true;
-        RecyclerView recycler = (RecyclerView)(this.findViewById(R.id.recyclerView));
+        RecyclerView recycler = this.findViewById(R.id.recyclerView);
         int palettes = recycler.getChildCount();
         for(int i = 0; i < palettes; i++){
             LinearLayout ll = (LinearLayout)(recycler.getChildAt(i));

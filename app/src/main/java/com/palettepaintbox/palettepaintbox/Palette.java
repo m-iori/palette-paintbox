@@ -2,6 +2,7 @@ package com.palettepaintbox.palettepaintbox;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
 import java.io.Serializable;
@@ -71,5 +72,36 @@ public class Palette implements Serializable{
 
         feedReaderDbHelper.close();
         return (int)(pid);
+    }
+
+    public static Palette getPalette(Context context, int paletteID) {
+        FeedReaderDbHelper feedReaderDbHelper = new FeedReaderDbHelper(context);
+        SQLiteDatabase db = feedReaderDbHelper.getWritableDatabase();
+
+        Cursor cursor = null;
+        String paletteName = "Palette not found.";
+        try {
+            cursor = db.rawQuery("SELECT paletteName FROM Palettes WHERE paletteID=?", new String[]{paletteID + ""});
+            if (cursor.getCount() > 0) {
+                cursor.moveToFirst();
+                paletteName = cursor.getString(cursor.getColumnIndex("paletteName"));
+            }
+        } finally {
+            cursor.close();
+        }
+
+        cursor = null;
+        ArrayList<String> paletteColors = new ArrayList<>();
+        try {
+            cursor = db.rawQuery("SELECT pColor FROM PalettesToColors WHERE pID=?", new String[]{paletteID + ""});
+            while (cursor.moveToNext()) {
+                paletteColors.add(cursor.getString(cursor.getColumnIndex("pColor")));
+            }
+        } finally {
+            cursor.close();
+        }
+        feedReaderDbHelper.close();
+
+        return new Palette(paletteID, paletteName, paletteColors);
     }
 }
