@@ -165,11 +165,6 @@ public class MainActivity extends AppCompatActivity {
         this.startActivity(intent);
     }
 
-    // Saves the new settings
-    protected void saveSettings(){
-        //save in database
-    }
-
     // Deletes existing palettes
     protected void deletePalette(int paletteID){
         SQLiteDatabase db = mDbHelper.getWritableDatabase();
