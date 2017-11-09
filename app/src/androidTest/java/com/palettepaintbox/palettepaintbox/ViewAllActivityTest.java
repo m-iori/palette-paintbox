@@ -3,6 +3,7 @@ package com.palettepaintbox.palettepaintbox;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
 
+import org.junit.Assert;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -25,6 +26,5 @@ public class ViewAllActivityTest {
         Toolbar mToolbar = mActivityRule.getActivity().findViewById(R.id.toolbar);
         assertEquals("Palette Paintbox", mToolbar.getTitle());
     }
-
 
 }

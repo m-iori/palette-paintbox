@@ -47,6 +47,8 @@ public class Palette implements Serializable{
         selection = "paletteID = ?";
         String[] selectionArgs2 = { "" + paletteID };
         db.delete("Palettes", selection, selectionArgs2);
+
+        db.close();
         feedReaderDbHelper.close();
         return true;
     }
@@ -70,6 +72,7 @@ public class Palette implements Serializable{
             db.insert("PalettesToColors", null, values);
         }
 
+        db.close();
         feedReaderDbHelper.close();
         return (int)(pid);
     }
@@ -100,6 +103,7 @@ public class Palette implements Serializable{
         } finally {
             cursor.close();
         }
+        db.close();
         feedReaderDbHelper.close();
 
         return new Palette(paletteID, paletteName, paletteColors);
@@ -130,6 +134,7 @@ public class Palette implements Serializable{
             db.insert("PalettesToColors", null, values);
         }
         db.close();
+        feedReaderDbHelper.close();
         return true;
     }
 
