@@ -1,18 +1,23 @@
 package com.palettepaintbox.palettepaintbox;
 
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.Point;
 import android.graphics.PorterDuff;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.TableLayout;
 import android.widget.TextView;
 import android.view.View.OnClickListener;
 
@@ -56,7 +61,14 @@ public class PaletteAdapter extends RecyclerView.Adapter<PaletteAdapter.PaletteH
                 Button colorButton = new Button(mLinearLayout.getContext());
                 colorButton.setBackground(backgroundShape);
 
-                LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(120,120);
+                // Size according to screen size
+                WindowManager wm = (WindowManager) mLinearLayout.getContext().getSystemService(Context.WINDOW_SERVICE);
+                Display display = wm.getDefaultDisplay();
+                Point size = new Point();
+                display.getSize(size);
+                int width = size.x;
+
+                LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(width/7,width/7);
                 layoutParams.setMargins(5,5,5,5);
                 colorButton.setLayoutParams(layoutParams);
                 colorButton.setId(palette.getPaletteID());

@@ -1,9 +1,11 @@
 package com.palettepaintbox.palettepaintbox;
 
+import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
+import android.graphics.Point;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -12,12 +14,15 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.view.Display;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.TableLayout;
 
 import java.util.ArrayList;
 import java.util.regex.Matcher;
@@ -142,6 +147,13 @@ public class ModifyPaletteActivity extends AppCompatActivity {
             String hexColor = "#" + color;
             backgroundShape.mutate().setColorFilter(Color.parseColor(hexColor), PorterDuff.Mode.MULTIPLY);
             Button colorButton = new Button(mLinearLayout.getContext());
+
+            WindowManager wm = (WindowManager) mLinearLayout.getContext().getSystemService(Context.WINDOW_SERVICE);
+            Display display = wm.getDefaultDisplay();
+            Point size = new Point();
+            display.getSize(size);
+            int width = size.x;
+
             colorButton.setBackground(backgroundShape);
             colorButton.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -151,7 +163,7 @@ public class ModifyPaletteActivity extends AppCompatActivity {
                 }
             });
 
-            LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(120, 120);
+            LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(width/7, width/7);
             layoutParams.setMargins(5, 5, 5, 5);
             colorButton.setLayoutParams(layoutParams);
             mLinearLayout.addView(colorButton);

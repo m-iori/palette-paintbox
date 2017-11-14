@@ -14,27 +14,25 @@
 
         <android.support.v7.widget.Toolbar
             android:id="@+id/paletteToolbar"
-            android:minHeight="?attr/actionBarSize"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:titleTextColor="@android:color/black"
+            android:background="@android:color/white"
+            android:minHeight="?attr/actionBarSize"
             app:title="Palette"
-            android:background="@android:color/white">
-        </android.support.v7.widget.Toolbar>
+            app:titleTextColor="@android:color/black"></android.support.v7.widget.Toolbar>
 
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/singleview"
             android:layout_width="match_parent"
-            android:layout_height="119dp" >
+            android:layout_height="119dp">
 
         </android.support.v7.widget.RecyclerView>
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/largeview"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="0.81">
+            android:layout_height="match_parent">
 
         </android.support.v7.widget.RecyclerView>
     </LinearLayout>
