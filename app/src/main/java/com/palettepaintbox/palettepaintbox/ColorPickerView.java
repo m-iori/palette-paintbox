@@ -26,13 +26,15 @@ public class ColorPickerView extends View {
 
     private Bitmap mBitmap;
     private Canvas mBitmapCanvas;
+    private int backgroundColor = Color.WHITE;
     private Paint mDrawPaint = new Paint();
 
     private ModifyPaletteActivity.OnColorChangedListener mListener;
 
-    public ColorPickerView(Context c, ModifyPaletteActivity.OnColorChangedListener l) {
+    public ColorPickerView(Context c, ModifyPaletteActivity.OnColorChangedListener l, int backgroundColor) {
         super(c);
         mListener = l;
+        this.backgroundColor = backgroundColor;
         initializeView();
     }
 
@@ -64,7 +66,7 @@ public class ColorPickerView extends View {
         if (mBitmap == null) {
             mBitmap = Bitmap.createBitmap(getWidth(), getHeight(), Bitmap.Config.RGB_565);
             mBitmapCanvas = new Canvas(mBitmap);
-            mBitmapCanvas.drawColor(Color.WHITE); // clear previously drawn stuff
+            mBitmapCanvas.drawColor(backgroundColor); // clear previously drawn stuff
             mBitmapCanvas.translate(centerX, centerY);
             mBitmapCanvas.drawOval(new RectF(-r, -r, r, r), mPaint);
         }

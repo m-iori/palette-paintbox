@@ -118,7 +118,15 @@ public class ModifyPaletteActivity extends AppCompatActivity {
             }
         };
 
-        ColorPickerView colorPickerView = new ColorPickerView(layout.getContext(), l);
+        int backgroundColor;
+        if(currentTheme.equals("dark")){
+            backgroundColor = Color.BLACK;
+        }
+        else{
+            backgroundColor = Color.WHITE;
+        }
+
+        ColorPickerView colorPickerView = new ColorPickerView(layout.getContext(), l, backgroundColor);
         layout.addView(colorPickerView);
 
         mLinearLayout = (LinearLayout) findViewById(R.id.palette_linear_layout);
