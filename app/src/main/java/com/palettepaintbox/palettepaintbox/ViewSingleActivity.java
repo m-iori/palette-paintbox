@@ -21,11 +21,25 @@ public class ViewSingleActivity extends AppCompatActivity {
 
     private PaletteAdapter mAdapter;
     int currentPID;
+    private FeedReaderDbHelper mDbHelper;
+
+    public static String colorCodeFormat = "hex";
 
     // This is called when the app first opens.
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        mDbHelper = new FeedReaderDbHelper(this);
+
+        setColorFormat();
+
+        String currentTheme = getCurrentTheme();
+        if(currentTheme.equals("dark")){
+            setTheme(R.style.darkTheme);
+        }
+        else{
+            setTheme(R.style.lightTheme);
+        }
 
         // Set view and toolbar
         setContentView(R.layout.activity_palette_single_viewer);
@@ -80,10 +94,68 @@ public class ViewSingleActivity extends AppCompatActivity {
         }
     }
 
+    protected String getCurrentTheme(){
+
+        SQLiteDatabase db = mDbHelper.getReadableDatabase();
+
+        // SQL to get all palettes
+        Cursor cursor = db.rawQuery(
+                "SELECT theme FROM Preferences",
+                null
+        );
+
+        try {
+            while (cursor.moveToNext()) {
+                String currentTheme = cursor.getString(cursor.getColumnIndex("theme"));
+                if (currentTheme.equals("dark")) {
+                    return "dark";
+                } else {
+                    return "light";
+                }
+            }
+        } finally {
+            cursor.close();
+        }
+
+        return "light";
+    }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_bar_palette, menu);
         return true;
+    }
+
+    protected void setColorFormat(){
+
+        SQLiteDatabase db = mDbHelper.getReadableDatabase();
+
+        // SQL to get all palettes
+        Cursor cursor = db.rawQuery(
+                "SELECT showHex,showRGB FROM Preferences",
+                null
+        );
+
+        try {
+            while (cursor.moveToNext()) {
+                String hex = cursor.getString(cursor.getColumnIndex("showHex"));
+                String rgb = cursor.getString(cursor.getColumnIndex("showRGB"));
+                if (hex.equals("true")) {
+                    colorCodeFormat = "hex";
+                }
+                if (rgb.equals("true")){
+                    colorCodeFormat = "rgb";
+                }
+                if(hex.equals("true") && rgb.equals("true")){
+                    colorCodeFormat = "both";
+                }
+                if(!hex.equals("true") && !rgb.equals("true")) {
+                    colorCodeFormat = "none";
+                }
+            }
+        } finally {
+            cursor.close();
+        }
     }
 
 }

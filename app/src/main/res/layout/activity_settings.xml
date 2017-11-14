@@ -51,11 +51,12 @@
         android:textSize="24sp" />
 
     <RadioGroup
+        android:id="@+id/dataChoice"
         android:layout_width="280dp"
         android:layout_height="wrap_content" >
 
         <RadioButton
-            android:id="@+id/radioButton5"
+            android:id="@+id/showData"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:onClick="enableColorCodeSettings"
@@ -79,7 +80,7 @@
             android:text="@string/rgb" />
 
         <RadioButton
-            android:id="@+id/radioButton3"
+            android:id="@+id/noData"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:onClick="disableColorCodeSettings"
@@ -97,6 +98,7 @@
 
     <Button
         android:id="@+id/applySettings"
+        android:onClick="applySettings"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/apply" />

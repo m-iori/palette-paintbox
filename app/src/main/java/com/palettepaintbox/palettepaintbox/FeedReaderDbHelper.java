@@ -1,8 +1,10 @@
 package com.palettepaintbox.palettepaintbox;
 
+import android.content.ContentValues;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.database.sqlite.SQLiteDatabase;
 import android.content.Context;
+import android.util.Log;
 
 /*
  * This is the class that helps to read and write to the SQLite local database.
@@ -22,6 +24,12 @@ public class FeedReaderDbHelper extends SQLiteOpenHelper {
                     "pID" + " INTEGER," +
                     "pColor" + " TEXT);";
 
+    private static final String SQL_CREATE_PREFERENCES =
+            "CREATE TABLE IF NOT EXISTS Preferences(" +
+                    "theme" + " TEXT," +
+                    "showHex" + " TEXT," +
+                    "showRGB" + " TEXT);";
+
     // If you change the database schema, you must increment the database version.
     public static final int DATABASE_VERSION = 1;
     public static final String DATABASE_NAME = "FeedReader.db";
@@ -35,6 +43,7 @@ public class FeedReaderDbHelper extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
         db.execSQL(SQL_CREATE_PALETTES);
         db.execSQL(SQL_CREATE_PALETTESTOCOLORS);
+        db.execSQL(SQL_CREATE_PREFERENCES);
     }
 
     // on upgrade

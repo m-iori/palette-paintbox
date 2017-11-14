@@ -1,6 +1,7 @@
 package com.palettepaintbox.palettepaintbox;
 
 import android.app.AlertDialog;
+import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
@@ -10,6 +11,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.util.SparseArray;
 import android.view.Menu;
 import android.view.View;
@@ -43,11 +45,30 @@ public class ViewAllActivity extends AppCompatActivity {
     // This is called when the app first opens.
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        Fabric.with(this, new Crashlytics());
 
         // Set up database helper
         mDbHelper = new FeedReaderDbHelper(this);
+
+        Cursor c = mDbHelper.getReadableDatabase().rawQuery("SELECT * FROM Preferences", null);
+        if(c.getCount() == 0){
+            ContentValues defaultPrefs = new ContentValues();
+            defaultPrefs.put("theme", "light");
+            defaultPrefs.put("showHex", "true");
+            defaultPrefs.put("showRGB", "false");
+            mDbHelper.getWritableDatabase().insert("Preferences", null, defaultPrefs);
+        }
+
+        super.onCreate(savedInstanceState);
+
+        String currentTheme = getCurrentTheme();
+        if(currentTheme.equals("dark")){
+            setTheme(R.style.darkTheme);
+        }
+        else{
+            setTheme(R.style.lightTheme);
+        }
+
+        Fabric.with(this, new Crashlytics());
 
         // Set the main view
         setContentView(R.layout.activity_main);
@@ -197,7 +218,7 @@ public class ViewAllActivity extends AppCompatActivity {
                 View v = ll.getChildAt(j);
                 if(v instanceof Button){
                     Button deleteButton = (Button)(v);
-                    if(deleteButton.getText().equals("X")){
+                    if(deleteButton.getVisibility() == View.GONE){
                         deleteButton.setVisibility(View.VISIBLE);
                     }
                 }
@@ -208,6 +229,32 @@ public class ViewAllActivity extends AppCompatActivity {
     protected void endDeleteMode(){
         IN_DELETE_MODE = false;
         recreate();
+    }
+
+    protected String getCurrentTheme(){
+
+        SQLiteDatabase db = mDbHelper.getReadableDatabase();
+
+        // SQL to get all palettes
+        Cursor cursor = db.rawQuery(
+                "SELECT theme FROM Preferences",
+                null
+        );
+
+        try {
+            while (cursor.moveToNext()) {
+                String currentTheme = cursor.getString(cursor.getColumnIndex("theme"));
+                if (currentTheme.equals("dark")) {
+                    return "dark";
+                } else {
+                    return "light";
+                }
+            }
+        } finally {
+            cursor.close();
+        }
+
+        return "light";
     }
 
     // Sets up the menu bar

@@ -1,5 +1,7 @@
 package com.palettepaintbox.palettepaintbox;
 
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
@@ -38,17 +40,17 @@ public class PaletteLargeAdapter extends RecyclerView.Adapter<PaletteLargeAdapte
 
         public void bindPalette(Palette palette) {
             mPalette = palette;
-            for(String color : palette.getColors()){
-                Drawable backgroundShape = ContextCompat.getDrawable(mLinearLayout.getContext(),R.drawable.color_rectangle);
+            for (String color : palette.getColors()) {
+                Drawable backgroundShape = ContextCompat.getDrawable(mLinearLayout.getContext(), R.drawable.color_rectangle);
                 String hexColor = "#" + color;
                 backgroundShape.mutate().setColorFilter(Color.parseColor(hexColor), PorterDuff.Mode.MULTIPLY);
                 Button colorButton = new Button(mLinearLayout.getContext());
                 colorButton.setBackground(backgroundShape);
-                colorButton.setText(hexColor);
+                colorButton.setText(getColorCodes(hexColor));
 
                 // TODO: Find the correct bounds
-                LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(200,100);
-                layoutParams.setMargins(5,5,5,5);
+                LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(500, 130);
+                layoutParams.setMargins(5, 5, 5, 5);
                 colorButton.setLayoutParams(layoutParams);
                 mLinearLayout.addView(colorButton);
             }
@@ -76,4 +78,26 @@ public class PaletteLargeAdapter extends RecyclerView.Adapter<PaletteLargeAdapte
     public int getItemCount() {
         return mPalettes.size();
     }
+
+    private static String getColorCodes(String hexCode) {
+        String finalCode = hexCode;
+        int red = Integer.valueOf(hexCode.substring(1, 3), 16);
+        int green = Integer.valueOf(hexCode.substring(3, 5), 16);
+        int blue = Integer.valueOf(hexCode.substring(5, 7), 16);
+        String rgbCode = "rgb(" + red + "," + green + "," + blue + ")";
+        if (ViewSingleActivity.colorCodeFormat.equals("hex")) {
+            finalCode = hexCode;
+        }
+        if (ViewSingleActivity.colorCodeFormat.equals("rgb")) {
+            finalCode = rgbCode;
+        }
+        if (ViewSingleActivity.colorCodeFormat.equals("both")) {
+            finalCode = hexCode + "\n" + rgbCode;
+        }
+        if(ViewSingleActivity.colorCodeFormat.equals("none")) {
+            finalCode = "            ";
+        }
+        return finalCode;
+    }
+
 }

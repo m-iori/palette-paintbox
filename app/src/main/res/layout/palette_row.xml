@@ -13,13 +13,13 @@
 
     <Button
         android:id="@+id/deleteButton"
-        android:layout_width="30dp"
+        android:layout_width="50dp"
         android:layout_height="50dp"
         android:textSize="16pt"
         android:background="#880000"
         android:textColor="#FFFFFF"
         android:visibility="gone"
-        android:text="@string/delete_x" />
+        android:drawableTop="@drawable/ic_clear_white_24dp" />
 
     <LinearLayout
         android:id="@+id/palette_row_linear_layout"

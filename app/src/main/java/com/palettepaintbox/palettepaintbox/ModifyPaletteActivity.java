@@ -1,6 +1,8 @@
 package com.palettepaintbox.palettepaintbox;
 
 import android.content.Intent;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
@@ -8,6 +10,8 @@ import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -16,6 +20,8 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 
 import java.util.ArrayList;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class ModifyPaletteActivity extends AppCompatActivity {
 
@@ -28,7 +34,8 @@ public class ModifyPaletteActivity extends AppCompatActivity {
     private EditText nameInput;
     private EditText hexText;
     private int paletteID;
-
+    private FeedReaderDbHelper mDbHelper;
+    private String currentTheme;
 
     public interface OnColorChangedListener {
         void colorChanged(int color);
@@ -37,11 +44,43 @@ public class ModifyPaletteActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        mDbHelper = new FeedReaderDbHelper(this);
+
+        currentTheme = getCurrentTheme();
+        if(currentTheme.equals("dark")){
+            setTheme(R.style.darkTheme);
+        }
+        else{
+            setTheme(R.style.lightTheme);
+        }
+
         setContentView(R.layout.palette_creator_and_editor);
         LinearLayout layout = findViewById(R.id.creator_and_editor);
 
         nameInput = findViewById(R.id.paletteNameInput);
         hexText = findViewById(R.id.paletteColorInput);
+
+        hexText.addTextChangedListener(new TextWatcher() {
+
+            public void afterTextChanged(Editable s) {
+                Pattern p = Pattern.compile("#[0-9A-Fa-f]{6}");
+                String colorString = hexText.getText().toString();
+                Matcher m = p.matcher(colorString);
+                boolean valid = m.matches();
+                if(valid){
+                    Drawable backgroundShape = ContextCompat.getDrawable(mLinearLayout.getContext(), R.drawable.color_circle);
+                    backgroundShape.mutate().setColorFilter(Color.parseColor(colorString), PorterDuff.Mode.MULTIPLY);
+                    mSelectedColor.setBackground(backgroundShape);
+                    currentColor = Color.parseColor(colorString);
+                    colors.set(mSelectedIndex, colorString.substring(1,colorString.length()));
+                }
+            }
+
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+
+            public void onTextChanged(CharSequence s, int start, int before, int count) {}
+
+        });
 
         Toolbar tb = (Toolbar) findViewById(R.id.editorToolbar);
         setSupportActionBar(tb);
@@ -113,7 +152,13 @@ public class ModifyPaletteActivity extends AppCompatActivity {
         mSelectedColor = buttons.get(0);
 
         if (colors.size() < 6) {
-            Drawable backgroundShape = ContextCompat.getDrawable(mLinearLayout.getContext(), R.drawable.ic_add_black_24dp);
+            Drawable backgroundShape = null;
+            if(currentTheme.equals("light")) {
+                backgroundShape = ContextCompat.getDrawable(mLinearLayout.getContext(), R.drawable.ic_add_black_24dp);
+            }
+            else{
+                backgroundShape = ContextCompat.getDrawable(mLinearLayout.getContext(), R.drawable.ic_add_white_24dp);
+            }
             Button addButton = new Button(mLinearLayout.getContext());
             addButton.setBackground(backgroundShape);
             LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(120, 120);
@@ -142,6 +187,32 @@ public class ModifyPaletteActivity extends AppCompatActivity {
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    protected String getCurrentTheme(){
+
+        SQLiteDatabase db = mDbHelper.getReadableDatabase();
+
+        // SQL to get all palettes
+        Cursor cursor = db.rawQuery(
+                "SELECT theme FROM Preferences",
+                null
+        );
+
+        try {
+            while (cursor.moveToNext()) {
+                String currentTheme = cursor.getString(cursor.getColumnIndex("theme"));
+                if (currentTheme.equals("dark")) {
+                    return "dark";
+                } else {
+                    return "light";
+                }
+            }
+        } finally {
+            cursor.close();
+        }
+
+        return "light";
     }
 
     @Override
