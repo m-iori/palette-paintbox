@@ -38,7 +38,7 @@
             android:theme="@style/AppTheme"></activity>
         <meta-data
             android:name="io.fabric.ApiKey"
-            android:value="22c31a53351a85f5e0c5501eadfe19a6383ef597" />
+            android:value="key here" />
     </application>
 
 </manifest>

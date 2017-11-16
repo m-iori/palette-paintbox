@@ -257,6 +257,19 @@ public class ViewAllActivity extends AppCompatActivity {
         return "light";
     }
 
+    protected void export() {
+        AlertDialog alertDialog = new AlertDialog.Builder(ViewAllActivity.this).create();
+        alertDialog.setTitle("Coming Soon");
+        alertDialog.setMessage("Exporting palettes coming soon!");
+        alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+        alertDialog.show();
+    }
+
     // Sets up the menu bar
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -276,6 +289,7 @@ public class ViewAllActivity extends AppCompatActivity {
                 }
 
             case R.id.action_export:
+                export();
                 return true;
 
             default:
