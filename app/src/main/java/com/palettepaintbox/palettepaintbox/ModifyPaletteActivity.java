@@ -22,7 +22,6 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
-import android.widget.TableLayout;
 
 import java.util.ArrayList;
 import java.util.regex.Matcher;
@@ -32,7 +31,6 @@ public class ModifyPaletteActivity extends AppCompatActivity {
 
     LinearLayout mLinearLayout;
     Button mSelectedColor;
-    int currentColor;
     private ArrayList<String> colors;
     private ArrayList<Button> buttons;
     private int mSelectedIndex;
@@ -76,7 +74,6 @@ public class ModifyPaletteActivity extends AppCompatActivity {
                     Drawable backgroundShape = ContextCompat.getDrawable(mLinearLayout.getContext(), R.drawable.color_circle);
                     backgroundShape.mutate().setColorFilter(Color.parseColor(colorString), PorterDuff.Mode.MULTIPLY);
                     mSelectedColor.setBackground(backgroundShape);
-                    currentColor = Color.parseColor(colorString);
                     colors.set(mSelectedIndex, colorString.substring(1,colorString.length()));
                 }
             }
@@ -87,38 +84,44 @@ public class ModifyPaletteActivity extends AppCompatActivity {
 
         });
 
-        Toolbar tb = (Toolbar) findViewById(R.id.editorToolbar);
+        Toolbar tb = findViewById(R.id.editorToolbar);
         setSupportActionBar(tb);
 
-        colors = new ArrayList<>();
-
-        Intent i = getIntent();
-        paletteID = i.getIntExtra("paletteID", -1);
-
-        if(paletteID > -1) {
-            Palette palette = Palette.getPalette(this, paletteID);
-            nameInput.setText(palette.getName());
-            String hexCode = "#FFFFFF";
-            colors=palette.getColors();
-            if (colors.size() > 0) {
-                hexCode = colors.get(colors.size()-1);
-            }
-            hexText.setText(hexCode);
-
+        if((savedInstanceState != null) && savedInstanceState.containsKey("COLORS_KEY")) {
+            colors = savedInstanceState.getStringArrayList("COLORS_KEY");
         } else {
-            colors.add("FFFFFF");
+            colors = new ArrayList<>();
+
+            Intent i = getIntent();
+            paletteID = i.getIntExtra("paletteID", -1);
+
+            if (paletteID > -1) {
+                Palette palette = Palette.getPalette(this, paletteID);
+                nameInput.setText(palette.getName());
+                String hexCode = "#FFFFFF";
+                colors = palette.getColors();
+                if (colors.size() > 0) {
+                    hexCode = colors.get(colors.size() - 1);
+                }
+                hexText.setText(hexCode);
+
+            } else {
+                colors.add("FFFFFF");
+            }
         }
+
+        mLinearLayout = findViewById(R.id.palette_linear_layout);
+        addColorsToView();
 
         OnColorChangedListener l = new OnColorChangedListener() {
             public void colorChanged(int color) {
                 String hexColor = String.format("%06X", (0xFFFFFF & color));
-                EditText hexText = (EditText) findViewById(R.id.paletteColorInput);
+                EditText hexText = findViewById(R.id.paletteColorInput);
                 String colorWithHash = "#" + hexColor;
                 hexText.setText(colorWithHash);
                 Drawable backgroundShape = ContextCompat.getDrawable(mLinearLayout.getContext(), R.drawable.color_circle);
                 backgroundShape.mutate().setColorFilter(color, PorterDuff.Mode.MULTIPLY);
                 mSelectedColor.setBackground(backgroundShape);
-                currentColor = color;
                 colors.set(mSelectedIndex, hexColor);
             }
         };
@@ -133,10 +136,6 @@ public class ModifyPaletteActivity extends AppCompatActivity {
 
         ColorPickerView colorPickerView = new ColorPickerView(layout.getContext(), l, backgroundColor);
         layout.addView(colorPickerView);
-
-        mLinearLayout = (LinearLayout) findViewById(R.id.palette_linear_layout);
-        addColorsToView();
-
     }
 
     private void addColorsToView(){
@@ -169,7 +168,8 @@ public class ModifyPaletteActivity extends AppCompatActivity {
             mLinearLayout.addView(colorButton);
             buttons.add(colorButton);
         }
-        mSelectedColor = buttons.get(0);
+        mSelectedColor = buttons.get(buttons.size()-1);
+        mSelectedIndex = buttons.size()-1;
 
         if (colors.size() < 6) {
             Drawable backgroundShape = null;
@@ -230,6 +230,7 @@ public class ModifyPaletteActivity extends AppCompatActivity {
             }
         } finally {
             cursor.close();
+            db.close();
         }
 
         return "light";
@@ -260,5 +261,14 @@ public class ModifyPaletteActivity extends AppCompatActivity {
 
     protected void onDestroy() {
         super.onDestroy();
+    }
+
+    // invoked when the activity may be temporarily destroyed, save the instance state here
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        outState.putStringArrayList("COLORS_KEY", this.colors);
+
+        // call superclass to save any view hierarchy
+        super.onSaveInstanceState(outState);
     }
 }
