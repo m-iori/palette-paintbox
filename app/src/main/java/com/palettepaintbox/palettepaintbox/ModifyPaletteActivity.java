@@ -1,28 +1,29 @@
 package com.palettepaintbox.palettepaintbox;
 
-import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
-import android.graphics.Point;
+import android.graphics.LinearGradient;
 import android.graphics.PorterDuff;
+import android.graphics.Shader;
 import android.graphics.drawable.Drawable;
+import android.graphics.drawable.ShapeDrawable;
+import android.graphics.drawable.shapes.RectShape;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.view.Display;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewTreeObserver;
-import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.SeekBar;
 
 import java.util.ArrayList;
 import java.util.regex.Matcher;
@@ -41,6 +42,16 @@ public class ModifyPaletteActivity extends AppCompatActivity {
     private FeedReaderDbHelper mDbHelper;
     private String currentTheme;
     private boolean viewIsInflated = false;
+    private SeekBar seekBarLuminosity;
+
+    private static int white_r = Color.red(Color.WHITE);
+    private static int white_g = Color.green(Color.WHITE);
+    private static int white_b = Color.blue(Color.WHITE);
+    private static int black_r = Color.red(Color.BLACK);
+    private static int black_g = Color.green(Color.BLACK);
+    private static int black_b = Color.blue(Color.BLACK);
+
+    private String currentSliderColor;
 
     public interface OnColorChangedListener {
         void colorChanged(int color);
@@ -60,7 +71,6 @@ public class ModifyPaletteActivity extends AppCompatActivity {
         }
 
         setContentView(R.layout.palette_creator_and_editor);
-        LinearLayout layout = findViewById(R.id.creator_and_editor);
 
         nameInput = findViewById(R.id.paletteNameInput);
         hexText = findViewById(R.id.paletteColorInput);
@@ -134,6 +144,7 @@ public class ModifyPaletteActivity extends AppCompatActivity {
                 backgroundShape.mutate().setColorFilter(color, PorterDuff.Mode.MULTIPLY);
                 mSelectedColor.setBackground(backgroundShape);
                 colors.set(mSelectedIndex, hexColor);
+                drawLuminosityBar();
             }
         };
 
@@ -145,8 +156,73 @@ public class ModifyPaletteActivity extends AppCompatActivity {
             backgroundColor = Color.WHITE;
         }
 
+        LinearLayout layout = findViewById(R.id.creator_and_editor);
         ColorPickerView colorPickerView = new ColorPickerView(layout.getContext(), l, backgroundColor);
         layout.addView(colorPickerView);
+
+        seekBarLuminosity = findViewById(R.id.luminosity);
+        final ViewTreeObserver seekBarObserver= seekBarLuminosity.getViewTreeObserver();
+        seekBarObserver.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                seekBarLuminosity.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+                    @Override
+                    public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                        if(fromUser){
+                            int color = Color.parseColor('#' + currentSliderColor);
+                            int color_r = Color.red(color);
+                            int color_g = Color.green(color);
+                            int color_b = Color.blue(color);
+
+                            int r,g,b;
+                            if(progress < 100){
+                                double percent = (double)progress/(double)100;
+                                r = (int)Math.round(white_r + percent * (color_r - white_r));
+                                g = (int)Math.round(white_g + percent * (color_g - white_g));
+                                b = (int)Math.round(white_b + percent * (color_b - white_b));
+                            } else {
+                                progress = progress - 100;
+                                double percent = (double)progress/(double)100;
+                                r = (int)Math.round(color_r + percent * (black_r - color_r));
+                                g = (int)Math.round(color_g + percent * (black_g - color_g));
+                                b = (int)Math.round(color_b + percent * (black_b - color_b));
+                            }
+                            int newColor = Color.argb(255, r, g, b);
+                            Drawable backgroundShape = ContextCompat.getDrawable(mLinearLayout.getContext(), R.drawable.color_circle);
+                            backgroundShape.mutate().setColorFilter(newColor, PorterDuff.Mode.MULTIPLY);
+                            mSelectedColor.setBackground(backgroundShape);
+                            String hexColor = String.format("%06X", (0xFFFFFF & newColor));
+                            colors.set(mSelectedIndex, hexColor);
+                        }
+                    }
+
+                    @Override
+                    public void onStartTrackingTouch(SeekBar seekBar) {
+
+                    }
+
+                    @Override
+                    public void onStopTrackingTouch(SeekBar seekBar) {
+
+                    }
+                });
+
+                drawLuminosityBar();
+                seekBarLuminosity.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+            }
+        });
+
+    }
+
+    private void drawLuminosityBar(){
+        currentSliderColor = colors.get(mSelectedIndex);
+        LinearGradient linearGradient = new LinearGradient(0.f, 0.f, seekBarLuminosity.getWidth(), 0.0f,
+                new int[] { 0xFFFFFFFF, Color.parseColor('#' + colors.get(mSelectedIndex)), 0x00000000},
+                null, Shader.TileMode.CLAMP);
+        ShapeDrawable shape = new ShapeDrawable(new RectShape());
+        shape.getPaint().setShader(linearGradient);
+
+        seekBarLuminosity.setProgressDrawable( shape );
     }
 
     private void addColorsToView(){
@@ -166,6 +242,7 @@ public class ModifyPaletteActivity extends AppCompatActivity {
                 public void onClick(View v) {
                     mSelectedColor = (Button)v;
                     mSelectedIndex = buttons.indexOf(v);
+                    drawLuminosityBar();
                 }
             });
 
