@@ -18,6 +18,9 @@ public class ColorPickerView extends View {
 
     private int centerX, centerY;
 
+    private String orientation;
+    private boolean orientationChanged = false;
+
     private final int[] mColors = new int[] {
             0xFFFF0000, 0xFFFF00FF, 0xFF0000FF, 0xFF00FFFF, 0xFF00FF00,
             0xFFFFFF00, 0xFFFF0000
@@ -63,7 +66,8 @@ public class ColorPickerView extends View {
         this.centerY = this.getMeasuredHeight() - centerX;
         float r = mPaint.getStrokeWidth() / 2;
 
-        if (mBitmap == null) {
+        if ((mBitmap == null) || (this.orientationChanged)) {
+            this.orientationChanged = false;
             mBitmap = Bitmap.createBitmap(getWidth(), getHeight(), Bitmap.Config.RGB_565);
             mBitmapCanvas = new Canvas(mBitmap);
             mBitmapCanvas.drawColor(backgroundColor); // clear previously drawn stuff
@@ -90,6 +94,20 @@ public class ColorPickerView extends View {
             performClick();
         }
         return true;
+    }
+
+    @Override
+    protected void onSizeChanged(int w, int h, int oldw, int oldh) {
+        if ( ((w > h) && (orientation == "Vertical")) ||
+             ((h > w) && (orientation == "Horizontal")) ) {
+            this.orientationChanged = true;
+        }
+        if (w > h) {
+            orientation = "Horizontal";
+        } else {
+            orientation = "Vertical";
+        }
+        super.onSizeChanged(w,h,oldw,oldh);
     }
 
     @Override
