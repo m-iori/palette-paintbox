@@ -18,6 +18,7 @@ import android.view.Display;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewTreeObserver;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
@@ -39,6 +40,7 @@ public class ModifyPaletteActivity extends AppCompatActivity {
     private int paletteID;
     private FeedReaderDbHelper mDbHelper;
     private String currentTheme;
+    private boolean viewIsInflated = false;
 
     public interface OnColorChangedListener {
         void colorChanged(int color);
@@ -70,7 +72,7 @@ public class ModifyPaletteActivity extends AppCompatActivity {
                 String colorString = hexText.getText().toString();
                 Matcher m = p.matcher(colorString);
                 boolean valid = m.matches();
-                if(valid){
+                if(valid && viewIsInflated){
                     Drawable backgroundShape = ContextCompat.getDrawable(mLinearLayout.getContext(), R.drawable.color_circle);
                     backgroundShape.mutate().setColorFilter(Color.parseColor(colorString), PorterDuff.Mode.MULTIPLY);
                     mSelectedColor.setBackground(backgroundShape);
@@ -111,7 +113,16 @@ public class ModifyPaletteActivity extends AppCompatActivity {
         }
 
         mLinearLayout = findViewById(R.id.palette_linear_layout);
-        addColorsToView();
+
+        final ViewTreeObserver observer= mLinearLayout.getViewTreeObserver();
+        observer.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                addColorsToView();
+                viewIsInflated = true;
+                mLinearLayout.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+            }
+        });
 
         OnColorChangedListener l = new OnColorChangedListener() {
             public void colorChanged(int color) {
@@ -140,18 +151,14 @@ public class ModifyPaletteActivity extends AppCompatActivity {
 
     private void addColorsToView(){
         buttons = new ArrayList<>();
+        int width = mLinearLayout.getWidth();
         mLinearLayout.removeAllViews();
+
         for(String color : this.colors) {
             Drawable backgroundShape = ContextCompat.getDrawable(mLinearLayout.getContext(), R.drawable.color_circle);
             String hexColor = "#" + color;
             backgroundShape.mutate().setColorFilter(Color.parseColor(hexColor), PorterDuff.Mode.MULTIPLY);
             Button colorButton = new Button(mLinearLayout.getContext());
-
-            WindowManager wm = (WindowManager) mLinearLayout.getContext().getSystemService(Context.WINDOW_SERVICE);
-            Display display = wm.getDefaultDisplay();
-            Point size = new Point();
-            display.getSize(size);
-            int width = size.x;
 
             colorButton.setBackground(backgroundShape);
             colorButton.setOnClickListener(new View.OnClickListener() {
