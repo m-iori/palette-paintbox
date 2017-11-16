@@ -193,6 +193,8 @@ public class ModifyPaletteActivity extends AppCompatActivity {
                             mSelectedColor.setBackground(backgroundShape);
                             String hexColor = String.format("%06X", (0xFFFFFF & newColor));
                             colors.set(mSelectedIndex, hexColor);
+                            String colorWithHash = "#" + hexColor;
+                            hexText.setText(colorWithHash);
                         }
                     }
 
