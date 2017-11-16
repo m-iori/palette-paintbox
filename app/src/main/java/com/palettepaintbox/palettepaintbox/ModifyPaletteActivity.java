@@ -42,6 +42,7 @@ public class ModifyPaletteActivity extends AppCompatActivity {
     private FeedReaderDbHelper mDbHelper;
     private String currentTheme;
     private boolean viewIsInflated = false;
+    private boolean updateCurrentSliderColor=true;
     private SeekBar seekBarLuminosity;
 
     private static int white_r = Color.red(Color.WHITE);
@@ -160,6 +161,10 @@ public class ModifyPaletteActivity extends AppCompatActivity {
         ColorPickerView colorPickerView = new ColorPickerView(layout.getContext(), l, backgroundColor);
         layout.addView(colorPickerView);
 
+        if((savedInstanceState != null) && savedInstanceState.containsKey("CURRENT_SLIDER_COLOR")) {
+            currentSliderColor = savedInstanceState.getString("CURRENT_SLIDER_COLOR");
+            updateCurrentSliderColor = false;
+        }
         seekBarLuminosity = findViewById(R.id.luminosity);
         final ViewTreeObserver seekBarObserver= seekBarLuminosity.getViewTreeObserver();
         seekBarObserver.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
@@ -217,9 +222,13 @@ public class ModifyPaletteActivity extends AppCompatActivity {
     }
 
     private void drawLuminosityBar(){
-        currentSliderColor = colors.get(mSelectedIndex);
+        if (updateCurrentSliderColor) {
+            currentSliderColor = colors.get(mSelectedIndex);
+        } else {
+            updateCurrentSliderColor = true;
+        }
         LinearGradient linearGradient = new LinearGradient(0.f, 0.f, seekBarLuminosity.getWidth(), 0.0f,
-                new int[] { 0xFFFFFFFF, Color.parseColor('#' + colors.get(mSelectedIndex)), 0x00000000},
+                new int[] { 0xFFFFFFFF, Color.parseColor('#' + currentSliderColor), 0x00000000},
                 null, Shader.TileMode.CLAMP);
         ShapeDrawable shape = new ShapeDrawable(new RectShape());
         shape.getPaint().setShader(linearGradient);
@@ -353,7 +362,7 @@ public class ModifyPaletteActivity extends AppCompatActivity {
     @Override
     public void onSaveInstanceState(Bundle outState) {
         outState.putStringArrayList("COLORS_KEY", this.colors);
-
+        outState.putString("CURRENT_SLIDER_COLOR", currentSliderColor);
         // call superclass to save any view hierarchy
         super.onSaveInstanceState(outState);
     }
