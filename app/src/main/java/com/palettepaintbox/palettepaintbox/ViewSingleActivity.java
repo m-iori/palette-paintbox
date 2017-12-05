@@ -1,5 +1,7 @@
 package com.palettepaintbox.palettepaintbox;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -81,6 +83,29 @@ public class ViewSingleActivity extends AppCompatActivity {
                 intent.putExtra("paletteID", currentPID);
                 this.startActivity(intent);
                 finish();
+                return true;
+
+            case R.id.action_delete_single:
+                AlertDialog alertDialog = new AlertDialog.Builder(ViewSingleActivity.this).create();
+                alertDialog.setTitle("Palette Deletion");
+                alertDialog.setMessage("Are you sure you want to delete this palette?");
+                alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "YES",
+                        new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                                Palette.deletePalette(getApplicationContext(), currentPID);
+                                Intent intent = new Intent(ViewSingleActivity.this, ViewAllActivity.class);
+                                startActivity(intent);
+                                finish();
+                                }
+                        });
+                alertDialog.setButton(AlertDialog.BUTTON_NEGATIVE, "NO",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                            }
+                        });
+                alertDialog.show();
                 return true;
 
             case R.id.action_view_all:

@@ -42,7 +42,7 @@ public class PreferencesActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
     }
 
-    protected void applySettings(View v){
+    public void applySettings(View v){
         //RadioButton light = (RadioButton) (v.findViewById(R.id.lightTh));
         View main = (View)(v.getParent());
         RadioGroup theme = (RadioGroup)main.findViewById(R.id.themeChoice);
