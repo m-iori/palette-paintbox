@@ -86,8 +86,12 @@ public class ColorPickerView extends View {
                 (InputMethodManager) activity.getSystemService(Activity.INPUT_METHOD_SERVICE);
         inputMethodManager.hideSoftInputFromWindow(activity.getCurrentFocus().getWindowToken(), 0);
 
-        int pixel = mBitmap.getPixel(Math.round(event.getX()),Math.round(event.getY()));
-        mListener.colorChanged(pixel);
+        int eventX = Math.round(event.getX());
+        int eventY = Math.round(event.getY());
+        if ((eventX < mBitmap.getWidth()) && (eventY < mBitmap.getHeight())) {
+            int pixel = mBitmap.getPixel(eventX, eventY);
+            mListener.colorChanged(pixel);
+        }
         //CHECK IF POINT IS IN CIRCLE before doing anything - use distance formula from point to center and compare to radius
         //OR if pixel is white, -1, then ignore it
         if (event.getAction() == MotionEvent.ACTION_DOWN) {
