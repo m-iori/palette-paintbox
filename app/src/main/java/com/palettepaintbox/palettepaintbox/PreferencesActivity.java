@@ -69,6 +69,7 @@ public class PreferencesActivity extends AppCompatActivity {
             setNoData();
         }
         Intent intent_view_all = new Intent(this, ViewAllActivity.class);
+        intent_view_all.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         this.startActivity(intent_view_all);
         finish();
     }

@@ -91,6 +91,7 @@ public class ViewAllActivity extends AppCompatActivity {
                             dialog.dismiss();
                             Palette.deletePalette(getApplicationContext(), pid);
                             Intent intent = new Intent(ViewAllActivity.this, ViewAllActivity.class);
+                            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
                             startActivity(intent);
                             finish();
                         }

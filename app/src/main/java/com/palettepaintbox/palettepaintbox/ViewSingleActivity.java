@@ -95,6 +95,7 @@ public class ViewSingleActivity extends AppCompatActivity {
                                 dialog.dismiss();
                                 Palette.deletePalette(getApplicationContext(), currentPID);
                                 Intent intent = new Intent(ViewSingleActivity.this, ViewAllActivity.class);
+                                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                                 startActivity(intent);
                                 finish();
                                 }
@@ -110,6 +111,7 @@ public class ViewSingleActivity extends AppCompatActivity {
 
             case R.id.action_view_all:
                 Intent intent_view_all = new Intent(this, ViewAllActivity.class);
+                intent_view_all.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 this.startActivity(intent_view_all);
                 finish();
                 return true;
