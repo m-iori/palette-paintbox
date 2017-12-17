@@ -1,4 +1,4 @@
-#Palette Paintbox
+# Palette Paintbox #
 
 Palette Paintbox is an android app for creating and managing color palettes.
 
