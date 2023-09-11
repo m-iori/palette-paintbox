@@ -1,0 +1,13 @@
+Palette Paintbox Privacy Policy
+
+The purpose of the Palette Paintbox app is to gather and store data about user-created color palettes.
+
+No data from user input is stored on any remote server. All data is stored in a SQLite database that is local to the device.
+
+This database stores data about the colors in a palette as well as the name given to the palette. User preferences including theme and display of color code formats are also stored.
+
+To delete a palette, use the built-in delete function. All data pertaining to the specified palette including colors and its name will be permanently deleted from the device.
+
+Currently, there is no functionality for sharing color palettes or other data between users of the app.
+
+-Developer Melissa Iori (miori.code@gmail.com)
