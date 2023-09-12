@@ -11,4 +11,5 @@ Find Palette Paintbox on the Google Play Store: tbd
 ![Multi Palette View](https://github.com/m-iori/palette-paintbox/blob/main/multiview.png?raw=true)
 ![Single Palette View](https://github.com/m-iori/palette-paintbox/blob/main/singleview.png?raw=true)
 ![Detailed Palette View](https://github.com/m-iori/palette-paintbox/blob/main/detailview.png?raw=true)
+
 ![Demo](https://github.com/m-iori/palette-paintbox/blob/main/demo.gif?raw=true)
