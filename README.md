@@ -1,6 +1,6 @@
 # Palette Paintbox #
 
-![Palette Paintbox Banner](https://github.com/m-iori/palette-paintbox/blob/main/banner.png?raw=true)
+![Palette Paintbox Banner](https://github.com/m-iori/palette-paintbox/blob/master/banner.png?raw=true)
 
 Palette Paintbox is an android app for creating and managing color palettes.
 
@@ -8,8 +8,8 @@ With Palette Paintbox, your phone becomes your palette! Choose and store color p
 
 Find Palette Paintbox on the Google Play Store: tbd
 
-![Multi Palette View](https://github.com/m-iori/palette-paintbox/blob/main/multiview.png?raw=true)
-![Single Palette View](https://github.com/m-iori/palette-paintbox/blob/main/singleview.png?raw=true)
-![Detailed Palette View](https://github.com/m-iori/palette-paintbox/blob/main/detailview.png?raw=true)
+![Multi Palette View](https://github.com/m-iori/palette-paintbox/blob/master/multiview.png?raw=true)
+![Single Palette View](https://github.com/m-iori/palette-paintbox/blob/master/singleview.png?raw=true)
+![Detailed Palette View](https://github.com/m-iori/palette-paintbox/blob/master/detailview.png?raw=true)
 
-![Demo](https://github.com/m-iori/palette-paintbox/blob/main/demo.gif?raw=true)
+![Demo](https://github.com/m-iori/palette-paintbox/blob/master/demo.gif?raw=true)
